@@ -216,6 +216,7 @@ const PaymentPage = () => {
     const { data: dataAdd, isPending: isLoadingAddOrder, isSuccess, isError } = mutationAddOrder
 
     useEffect(() => {
+
         if (isSuccess && dataAdd?.status === 'OK') {
             const arrayOrdered = []
             order?.orderItemsSlected?.forEach(element => {
@@ -231,8 +232,8 @@ const PaymentPage = () => {
                     totalPriceMemo: totalPriceMemo
                 }
             })
-        } else if (isError) {
-            message.error()
+        } else if (dataAdd?.status === 'ERR') {
+            message.error(dataAdd?.message)
         }
     }, [isSuccess, isError])
 

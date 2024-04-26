@@ -188,6 +188,7 @@ const AdminProduct = () => {
     setSearchText('');
   };
   const [form] = Form.useForm();
+  const [form2] = Form.useForm()
 
   const mutation = useMutationHooks(
     (data) => {
@@ -284,8 +285,8 @@ const AdminProduct = () => {
 
 
   useEffect(() => {
-    form.setFieldsValue(stateProductDetails)
-  }, [form, stateProductDetails])
+    form2.setFieldsValue(stateProductDetails)
+  }, [form2, stateProductDetails])
 
   useEffect(() => {
     if (rowSelected && isOpenDrawer) {
@@ -531,7 +532,7 @@ const AdminProduct = () => {
 
     })
     setNewSize({ size: '', countInStock: '' });
-    form.resetFields()
+    form2.resetFields()
   };
   const handleDelteManyProducts = (ids) => {
     mutationDeletedMany.mutate({ ids: ids, token: user?.access_token }, {
@@ -576,7 +577,7 @@ const AdminProduct = () => {
       sizes: []
 
     })
-
+    setNewSize({ size: '', countInStock: '' });
 
     form.resetFields()
   };
@@ -603,6 +604,23 @@ const AdminProduct = () => {
         queryProduct.refetch()
       }
     })
+    setStateProduct({
+      name: '',
+      price: '',
+      description: '',
+      rating: '',
+      images: [],
+      type: '',
+      countInStock: '',
+      discount: '',
+      category: '',
+      sizes: []
+
+    })
+    setNewSize({ size: '', countInStock: '' });
+    form.resetFields()
+
+
   }
 
   const handleOnchange = (e) => {
@@ -668,6 +686,7 @@ const AdminProduct = () => {
 
     }
     setLoadImage(true)
+    console.log(loadImage)
     const downloadURLs = [];
     // Upload each image to Firebase Storage
     for (let i = 0; i < event.target.files.length; i++) {
@@ -903,7 +922,7 @@ const AdminProduct = () => {
             wrapperCol={{ span: 22 }}
             onFinish={onUpdateProduct}
             autoComplete="on"
-            form={form}
+            form={form2}
           >
             <Form.Item
               label="Name"
