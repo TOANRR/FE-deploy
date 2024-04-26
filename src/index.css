@@ -7,8 +7,10 @@ body {
   box-sizing: border-box;
   padding: 0;
   min-width: 400px;
+  font-family: "Trirong", serif;
 }
 
+
 html {
-  font-size: 100%;
+  font-size: 90%;
 }

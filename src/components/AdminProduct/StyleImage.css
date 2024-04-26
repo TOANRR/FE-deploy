@@ -9,6 +9,10 @@
     display: none;
 }
 
+.image-upload {
+    display: none;
+}
+
 .image-upload-button {
     background-color: #ccc;
     border: none;

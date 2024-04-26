@@ -35,6 +35,7 @@ const AdminProduct = () => {
   const searchInput = useRef(null);
   const [image1, setImage1] = useState([])
   const hiddenFileInput = useRef(null);
+  const hiddenFileInputDetail = useRef(null);
   const [loadImage, setLoadImage] = useState(false)
   const [loadImageDetail, setLoadImageDetail] = useState(false)
 
@@ -188,7 +189,7 @@ const AdminProduct = () => {
     setSearchText('');
   };
   const [form] = Form.useForm();
-  const [form2] = Form.useForm()
+  const [form2] = Form.useForm();
 
   const mutation = useMutationHooks(
     (data) => {
@@ -494,8 +495,8 @@ const AdminProduct = () => {
     if (isSuccess && data?.status === 'OK') {
       message.success()
       handleCancel()
-    } else if (isError) {
-      message.error()
+    } else if (data?.status === 'ERR') {
+      message.error(data?.message)
     }
   }, [isSuccess])
 
@@ -577,7 +578,7 @@ const AdminProduct = () => {
       sizes: []
 
     })
-    setNewSize({ size: '', countInStock: '' });
+
 
     form.resetFields()
   };
@@ -604,23 +605,6 @@ const AdminProduct = () => {
         queryProduct.refetch()
       }
     })
-    setStateProduct({
-      name: '',
-      price: '',
-      description: '',
-      rating: '',
-      images: [],
-      type: '',
-      countInStock: '',
-      discount: '',
-      category: '',
-      sizes: []
-
-    })
-    setNewSize({ size: '', countInStock: '' });
-    form.resetFields()
-
-
   }
 
   const handleOnchange = (e) => {
@@ -638,16 +622,16 @@ const AdminProduct = () => {
   }
 
 
-  const handleOnchangeAvatar = async ({ fileList }) => {
-    const file = fileList[0]
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj);
-    }
-    setStateProduct({
-      ...stateProduct,
-      image: file.preview
-    })
-  }
+  // const handleOnchangeAvatar = async ({ fileList }) => {
+  //   const file = fileList[0]
+  //   if (!file.url && !file.preview) {
+  //     file.preview = await getBase64(file.originFileObj);
+  //   }
+  //   setStateProduct({
+  //     ...stateProduct,
+  //     image: file.preview
+  //   })
+  // }
 
   // const handleOnchangeAvatarDetails = async ({ fileList }) => {
   //   const file = fileList[0]
@@ -673,10 +657,12 @@ const AdminProduct = () => {
     })
   }
 
+  const handleClickDetail = (event) => {
+    hiddenFileInputDetail.current.click();
+  };
   const handleClick = (event) => {
     hiddenFileInput.current.click();
   };
-
   const handleImageChange = async (event) => {
     console.log(event.target.files)
 
@@ -686,7 +672,7 @@ const AdminProduct = () => {
 
     }
     setLoadImage(true)
-    console.log(loadImage)
+    console.log("load", loadImage)
     const downloadURLs = [];
     // Upload each image to Firebase Storage
     for (let i = 0; i < event.target.files.length; i++) {
@@ -711,7 +697,9 @@ const AdminProduct = () => {
       return
 
     }
+    console.log("dang update")
     setLoadImageDetail(true)
+    console.log("loading up", loadImageDetail)
     const downloadURLs = [];
     // Upload each image to Firebase Storage
     for (let i = 0; i < event.target.files.length; i++) {
@@ -990,7 +978,7 @@ const AdminProduct = () => {
             // rules={[{ required: true, message: 'Please input 4 images!' }]}
             >
               <Loading isLoading={loadImageDetail}>
-                <div onClick={handleClick} style={{ cursor: "pointer" }} name="images">
+                <div onClick={handleClickDetail} style={{ cursor: "pointer" }} name="images">
                   {stateProductDetails.images[0] ? (
                     <img src={stateProductDetails.images[0]} alt="upload image" className="img-after" height="40" width="30" />
                   ) : (
@@ -1017,10 +1005,10 @@ const AdminProduct = () => {
                     <img src="https://t4.ftcdn.net/jpg/04/81/13/43/360_F_481134373_0W4kg2yKeBRHNEklk4F9UXtGHdub3tYk.jpg" className="img-before" />
                   )}
                   <input
-                    id="image-upload-input"
+                    id="image-upload"
                     type="file"
                     multiple
-                    ref={hiddenFileInput}
+                    ref={hiddenFileInputDetail}
                     onChange={(event) => handleImageChangeDetail(event)}
                     style={{ display: "none" }}
                   />
