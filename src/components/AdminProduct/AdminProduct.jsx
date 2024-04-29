@@ -1,11 +1,11 @@
-import { Button, Form, Input, Modal, Select, Space } from 'antd'
+import { Button, Col, Form, Input, Modal, Row, Select, Space } from 'antd'
 import { PlusOutlined, DeleteOutlined, EditOutlined, SearchOutlined, MinusCircleOutlined } from '@ant-design/icons'
 import React, { useRef } from 'react'
 import { WrapperHeader, WrapperUploadFile } from './style'
 import TableComponent from '../TableComponent/TableComponent'
 import { useState } from 'react'
 import InputComponent from '../InputComponent/InputComponent'
-import { getBase64, renderOptions } from '../../utils'
+import { getBase64, renderOptions, renderOptionsCate } from '../../utils'
 import * as ProductService from '../../services/ProductService'
 import { useMutationHooks } from '../../hooks/useMutationHook'
 import Loading from '../../components/LoadingComponent/LoadingComponent'
@@ -22,6 +22,7 @@ import { storage } from '../../components/FirebaseImage/config';
 import { ref, getDownloadURL, uploadBytesResumable, uploadBytes } from "firebase/storage";
 import { limit } from 'firebase/firestore'
 import { CLOTHING_TYPES } from '../../contant';
+import { type } from '@testing-library/user-event/dist/type'
 const AdminProduct = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -44,6 +45,7 @@ const AdminProduct = () => {
 
   const [sizes, setSizes] = useState([]);
   const [newSize, setNewSize] = useState({ size: '', countInStock: '' });
+
 
   const handleSizeChangeAdd = (index, value, field) => {
     const newSizes = [...stateProduct.sizes];
@@ -93,7 +95,7 @@ const AdminProduct = () => {
             value={size.countInStock}
             onChange={(e) => handleSizeChangeAdd(index, e.target.value, 'countInStock')}
           />
-          <Button type="danger" onClick={() => handleRemoveSizeAdd(index)}>Remove</Button>
+          <Button type="danger" onClick={() => handleRemoveSizeAdd(index)}>Xóa</Button>
         </Space>
       </div>
     ));
@@ -134,7 +136,7 @@ const AdminProduct = () => {
 
   const renderSizeInputs = () => {
     return stateProductDetails.sizes.map((size, index) => (
-      <div key={index}>
+      <div key={index} style={{ marginBottom: "5px" }}>
         <Space>
           <Input
             style={{ width: '100px' }}
@@ -146,7 +148,7 @@ const AdminProduct = () => {
             value={size.countInStock}
             onChange={(e) => handleSizeChange(index, e.target.value, 'countInStock')}
           />
-          <Button type="danger" onClick={() => handleRemoveSize(index)}>Remove</Button>
+          <Button type="danger" onClick={() => handleRemoveSize(index)}>Xóa</Button>
         </Space>
       </div>
     ));
@@ -160,7 +162,7 @@ const AdminProduct = () => {
     images: [],
     type: '',
     countInStock: '',
-    newType: '',
+    newCategory: '',
     discount: '',
     category: '',
     sizes: []
@@ -176,7 +178,8 @@ const AdminProduct = () => {
     countInStock: '',
     discount: '',
     sizes: [],
-    category: ''
+    category: '',
+    newCategory: '',
   })
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -278,11 +281,12 @@ const AdminProduct = () => {
     }
     setIsLoadingUpdate(false)
   }
-  const fetchAllTypeProduct = async () => {
-    const res = await ProductService.getAllTypeProduct()
+  const fetchAllCategories = async () => {
+    const res = await ProductService.getCategories()
     console.log(res)
     return res
   }
+  const categoryProduct = useQuery({ queryKey: ['category-product'], queryFn: fetchAllCategories })
 
 
   useEffect(() => {
@@ -306,7 +310,7 @@ const AdminProduct = () => {
   const { data: dataDeletedMany, isPending: isLoadingDeletedMany, isSuccess: isSuccessDelectedMany, isError: isErrorDeletedMany } = mutationDeletedMany
 
   const queryProduct = useQuery({ queryKey: ['products'], queryFn: getAllProducts })
-  const typeProduct = useQuery({ queryKey: ['type-product'], queryFn: fetchAllTypeProduct })
+  // const typeProduct = useQuery({ queryKey: ['type-product'], queryFn: fetchAllTypeProduct })
   const { isLoading: isLoadingProducts, data: products } = queryProduct
   const renderAction = () => {
     return (
@@ -595,7 +599,7 @@ const AdminProduct = () => {
       type: stateProduct.type,
       countInStock: stateProduct.countInStock,
       discount: stateProduct.discount,
-      category: stateProduct.category,
+      category: stateProduct.category === 'add_category' ? stateProduct.newCategory : stateProduct.category,
       sizes: stateProduct.sizes
 
     }
@@ -644,7 +648,8 @@ const AdminProduct = () => {
   //   })
   // }
   const onUpdateProduct = () => {
-    mutationUpdate.mutate({ id: rowSelected, token: user?.access_token, ...stateProductDetails }, {
+    const para = { ...stateProductDetails, category: stateProductDetails.category === 'add_category' ? stateProductDetails.newCategory : stateProductDetails.category }
+    mutationUpdate.mutate({ id: rowSelected, token: user?.access_token, ...para }, {
       onSettled: () => {
         queryProduct.refetch()
       }
@@ -656,6 +661,25 @@ const AdminProduct = () => {
       type: value
     })
   }
+  const handleChangeSelectDetail = (value) => {
+    setStateProductDetails({
+      ...stateProductDetails,
+      type: value
+    })
+  }
+  const handleChangeSelectCate = (value) => {
+    setStateProduct({
+      ...stateProduct,
+      category: value
+    })
+  }
+  const handleChangeSelectCateDetail = (value) => {
+    setStateProductDetails({
+      ...stateProductDetails,
+      category: value
+    })
+  }
+
 
   const handleClickDetail = (event) => {
     hiddenFileInputDetail.current.click();
@@ -727,7 +751,7 @@ const AdminProduct = () => {
     <div>
       <WrapperHeader>Quản lý sản phẩm</WrapperHeader>
       <div style={{ marginTop: '10px' }}>
-        <Button style={{ height: '150px', width: '150px', borderRadius: '6px', borderStyle: 'dashed' }} onClick={() => setIsModalOpen(true)}><PlusOutlined style={{ fontSize: '60px' }} /></Button>
+        <Button style={{ height: '100px', width: '100px', borderRadius: '6px', borderStyle: 'dashed' }} onClick={() => setIsModalOpen(true)}><PlusOutlined style={{ fontSize: '60px' }} /></Button>
       </div>
       <div style={{ marginTop: '20px' }}>
         <TableComponent handleDelteMany={handleDelteManyProducts} columns={columns} isLoading={isLoadingProducts} data={dataTable} onRow={(record, rowIndex) => {
@@ -738,7 +762,7 @@ const AdminProduct = () => {
           };
         }} />
       </div>
-      <ModalComponent title="Tạo sản phẩm" open={isModalOpen} onCancel={handleCancel} footer={null}  >
+      <ModalComponent title="Tạo sản phẩm" open={isModalOpen} onCancel={handleCancel} footer={null} width={1000} height={700}>
         <Loading isLoading={isPending}>
 
           <Form
@@ -749,70 +773,156 @@ const AdminProduct = () => {
             autoComplete="on"
             form={form}
           >
-            <Form.Item
-              label="Tên"
-              name="name"
-              rules={[{ required: true, message: 'Vui lòng nhập tên sản phẩm !' }]}
-            >
-              <InputComponent value={stateProduct.name} onChange={handleOnchange} name="name" />
-            </Form.Item>
+            <Row gutter={24}>
+              <Col span={12}>
+                <Form.Item
+                  label="Tên"
+                  name="name"
+                  rules={[{ required: true, message: 'Vui lòng nhập tên sản phẩm !' }]}
+                >
+                  <InputComponent value={stateProduct.name} onChange={handleOnchange} name="name" />
+                </Form.Item>
+                <Form.Item
+                  label="Loại"
+                  name="type"
+                  rules={[{ required: true, message: 'Vui lòng nhập loại sản phẩm!' }]}
+                >
+                  <Select
+                    name="type"
+                    // defaultValue="lucy"
+                    // style={{ width: 120 }}
+                    value={stateProduct.type}
+                    onChange={handleChangeSelect}
+                    options={renderOptions(CLOTHING_TYPES)}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="Danh mục"
+                  name="category"
+                  rules={[{ required: true, message: 'Please input your type!' }]}
+                >
+                  <Select
+                    name="category"
+                    // defaultValue="lucy"
+                    // style={{ width: 120 }}
+                    value={stateProduct.category}
+                    onChange={handleChangeSelectCate}
+                    options={renderOptionsCate(categoryProduct?.data)}
+                  />
+                </Form.Item>
+                {stateProduct.category === 'add_category' && (
+                  <Form.Item
+                    label='Thêm'
+                    name="newCategory"
+                    rules={[{ required: true, message: 'Please input your type!' }]}
+                  >
+                    <InputComponent value={stateProduct.newCategory} onChange={handleOnchange} name="newCategory" />
+                  </Form.Item>
+                )}
+                <Form.Item
+                  label="Sizes"
+                  name="sizes"
+                  rules={[{ required: true, message: 'nhập size và số lượng' }]}
+                >
+                  <div name="sizes">
+                    {renderSizeInputsAdd()}
+                    <div style={{ marginBottom: '16px' }}>
+                      <Space>
+                        <Input
+                          placeholder="Kích cỡ"
+                          value={newSize.size}
+                          onChange={(e) => handleNewSizeChangeAdd(e.target.value, 'size')}
+                          style={{ width: '100px' }}
+                        />
+                        <Input
+                          style={{ width: '100px' }}
+                          placeholder="Số lượng"
+                          value={newSize.countInStock}
+                          onChange={(e) => handleNewSizeChangeAdd(e.target.value, 'countInStock')}
+                        />
+                        <Button onClick={handleAddSizeAdd}>Thêm</Button>
+                      </Space>
+                    </div>
+                  </div>
 
-            <Form.Item
-              label="Loại"
-              name="type"
-              rules={[{ required: true, message: 'Vui lòng nhập loại sản phẩm!' }]}
-            >
-              <Select
-                name="type"
-                // defaultValue="lucy"
-                // style={{ width: 120 }}
-                value={stateProduct.type}
-                onChange={handleChangeSelect}
-                options={renderOptions(typeProduct?.data?.data)}
-              />
-            </Form.Item>
+                </Form.Item>
+                <Form.Item
+                  label="Giá"
+                  name="price"
+                  rules={[{ required: true, message: 'Vui lòng nhập giá sản phẩm!' }]}
+                >
+                  <InputComponent value={stateProduct.price} onChange={handleOnchange} name="price" />
+                </Form.Item>
 
-            <Form.Item
-              label="Danh mục"
-              name="category"
-              rules={[{ required: true, message: 'Vui lòng nhập danh mục sản phẩm!' }]}
-            >
-              <Input
-                name="category"
-                // defaultValue="lucy"
-                // style={{ width: 120 }}
-                value={stateProduct.category}
-                onChange={handleOnchange}
+                <Form.Item
+                  label="Discount"
+                  name="discount"
+                  rules={[{ required: true, message: 'Please input your discount of product!' }]}
+                >
+                  <InputComponent value={stateProduct.discount} onChange={handleOnchange} name="discount" />
+                </Form.Item>
 
-              />
-            </Form.Item>
-            <Form.Item
-              label="Sizes"
-              name="sizes"
-              rules={[{ required: true, message: 'nhập size và số lượng' }]}
-            >
-              <div name="sizes">
-                {renderSizeInputsAdd()}
-                <div style={{ marginBottom: '16px' }}>
-                  <Space>
-                    <Input
-                      placeholder="Size"
-                      value={newSize.size}
-                      onChange={(e) => handleNewSizeChangeAdd(e.target.value, 'size')}
-                      style={{ width: '100px' }}
-                    />
-                    <Input
-                      style={{ width: '100px' }}
-                      placeholder="countInStock"
-                      value={newSize.countInStock}
-                      onChange={(e) => handleNewSizeChangeAdd(e.target.value, 'countInStock')}
-                    />
-                    <Button onClick={handleAddSizeAdd}>Add Size</Button>
-                  </Space>
-                </div>
-              </div>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="Ảnh"
+                  name="images"
+                // rules={[{ required: true, message: 'Please input 4 images!' }]}
+                >
+                  <Loading isLoading={loadImage}>
+                    <div onClick={handleClick} style={{ cursor: "pointer" }} name="images">
+                      {stateProduct.images[0] ? (
+                        <img src={stateProduct.images[0]} alt="upload image" className="img-after" height="40" width="30" />
+                      ) : (
+                        <img src="https://t4.ftcdn.net/jpg/04/81/13/43/360_F_481134373_0W4kg2yKeBRHNEklk4F9UXtGHdub3tYk.jpg" className="img-before" />
+                      )}
 
-            </Form.Item>
+
+
+                      {stateProduct.images[1] ? (
+                        <img src={stateProduct.images[1]} alt="upload image" className="img-after" height="40" width="30" />
+                      ) : (
+                        <img src="https://t4.ftcdn.net/jpg/04/81/13/43/360_F_481134373_0W4kg2yKeBRHNEklk4F9UXtGHdub3tYk.jpg" className="img-before" />
+                      )}
+
+                      {stateProduct.images[2] ? (
+                        <img src={stateProduct.images[2]} alt="upload image" className="img-after" height="40" width="30" />
+                      ) : (
+                        <img src="https://t4.ftcdn.net/jpg/04/81/13/43/360_F_481134373_0W4kg2yKeBRHNEklk4F9UXtGHdub3tYk.jpg" className="img-before" />
+                      )}
+
+                      {stateProduct.images[3] ? (
+                        <img src={stateProduct.images[3]} alt="upload image" className="img-after" height="40" width="30" />
+                      ) : (
+                        <img src="https://t4.ftcdn.net/jpg/04/81/13/43/360_F_481134373_0W4kg2yKeBRHNEklk4F9UXtGHdub3tYk.jpg" className="img-before" />
+                      )}
+                      <input
+                        id="image-upload-input"
+                        type="file"
+                        multiple
+                        ref={hiddenFileInput}
+                        onChange={(event) => handleImageChange(event)}
+                        style={{ display: "none" }}
+                      />
+                    </div>
+                  </Loading>
+
+
+                </Form.Item>
+                <Form.Item
+                  label="Mô tả"
+                  name="description"
+                  rules={[{ required: true, message: 'Vui lòng nhập mô tả!' }]}
+                >
+                  <ReactQuill style={{ height: "300%" }} value={stateProduct.description} onChange={handleOnchangeDespcriptionAdd} name="description" />
+                </Form.Item>
+              </Col>
+            </Row>
+
+
+
+
+
 
             {/* {stateProduct.type === 'add_type' && (
               <Form.Item
@@ -826,73 +936,8 @@ const AdminProduct = () => {
 
 
 
-            <Form.Item
-              label="Giá"
-              name="price"
-              rules={[{ required: true, message: 'Vui lòng nhập giá sản phẩm!' }]}
-            >
-              <InputComponent value={stateProduct.price} onChange={handleOnchange} name="price" />
-            </Form.Item>
-
-            <Form.Item
-              label="Discount"
-              name="discount"
-              rules={[{ required: true, message: 'Please input your discount of product!' }]}
-            >
-              <InputComponent value={stateProduct.discount} onChange={handleOnchange} name="discount" />
-            </Form.Item>
-            <Form.Item
-              label="Images"
-              name="images"
-            // rules={[{ required: true, message: 'Please input 4 images!' }]}
-            >
-              <Loading isLoading={loadImage}>
-                <div onClick={handleClick} style={{ cursor: "pointer" }} name="images">
-                  {stateProduct.images[0] ? (
-                    <img src={stateProduct.images[0]} alt="upload image" className="img-after" height="40" width="30" />
-                  ) : (
-                    <img src="https://t4.ftcdn.net/jpg/04/81/13/43/360_F_481134373_0W4kg2yKeBRHNEklk4F9UXtGHdub3tYk.jpg" className="img-before" />
-                  )}
 
 
-
-                  {stateProduct.images[1] ? (
-                    <img src={stateProduct.images[1]} alt="upload image" className="img-after" height="40" width="30" />
-                  ) : (
-                    <img src="https://t4.ftcdn.net/jpg/04/81/13/43/360_F_481134373_0W4kg2yKeBRHNEklk4F9UXtGHdub3tYk.jpg" className="img-before" />
-                  )}
-
-                  {stateProduct.images[2] ? (
-                    <img src={stateProduct.images[2]} alt="upload image" className="img-after" height="40" width="30" />
-                  ) : (
-                    <img src="https://t4.ftcdn.net/jpg/04/81/13/43/360_F_481134373_0W4kg2yKeBRHNEklk4F9UXtGHdub3tYk.jpg" className="img-before" />
-                  )}
-
-                  {stateProduct.images[3] ? (
-                    <img src={stateProduct.images[3]} alt="upload image" className="img-after" height="40" width="30" />
-                  ) : (
-                    <img src="https://t4.ftcdn.net/jpg/04/81/13/43/360_F_481134373_0W4kg2yKeBRHNEklk4F9UXtGHdub3tYk.jpg" className="img-before" />
-                  )}
-                  <input
-                    id="image-upload-input"
-                    type="file"
-                    multiple
-                    ref={hiddenFileInput}
-                    onChange={(event) => handleImageChange(event)}
-                    style={{ display: "none" }}
-                  />
-                </div>
-              </Loading>
-
-
-            </Form.Item>
-            <Form.Item
-              label="Description"
-              name="description"
-              rules={[{ required: true, message: 'Please input your count description!' }]}
-            >
-              <ReactQuill value={stateProduct.description} onChange={handleOnchangeDespcriptionAdd} name="description" />
-            </Form.Item>
             <Form.Item wrapperCol={{ offset: 20, span: 16 }}>
               <Button style={{ backgroundColor: "#000000", color: "#fff" }} htmlType="submit">
                 Submit
@@ -901,7 +946,7 @@ const AdminProduct = () => {
           </Form>
         </Loading>
       </ModalComponent>
-      <DrawerComponent title='Chi tiết sản phẩm' isOpen={isOpenDrawer} onClose={handleCloseDrawer} width="90%" >
+      <DrawerComponent title='Chi tiết sản phẩm' isOpen={isOpenDrawer} onClose={handleCloseDrawer} width="85%" >
         <Loading isLoading={isLoadingUpdate || isLoadingUpdated}>
 
           <Form
@@ -912,139 +957,169 @@ const AdminProduct = () => {
             autoComplete="on"
             form={form2}
           >
-            <Form.Item
-              label="Name"
-              name="name"
-              rules={[{ required: true, message: 'Please input your name!' }]}
-            >
-              <InputComponent value={stateProductDetails.name} onChange={handleOnchangeDetails} name="name" />
-            </Form.Item>
+            <Row gutter={24}>
+              <Col span={12}>
+                <Form.Item
+                  label="Tên"
+                  name="name"
+                  rules={[{ required: true, message: 'Vui lòng nhập tên sản phẩm!' }]}
+                  labelCol={{ span: 4 }}
+                >
+                  <InputComponent value={stateProductDetails.name} onChange={handleOnchangeDetails} name="name" />
+                </Form.Item>
 
-            <Form.Item
-              label="Loại"
-              name="type"
-              rules={[{ required: true, message: 'Vui lòng nhập loại sản phẩm!' }]}
-            >
-              <Select
-                name="type"
-                // defaultValue="lucy"
-                // style={{ width: 120 }}
-                value={stateProductDetails.type}
-                onChange={handleChangeSelect}
-                options={renderOptions(CLOTHING_TYPES)}
-              />
-            </Form.Item>
-
-            <Form.Item
-              label="Danh mục"
-              name="category"
-              rules={[{ required: true, message: 'Vui lòng nhập danh mục sản phẩm!' }]}
-            >
-              <Input
-                name="category"
-                // defaultValue="lucy"
-                // style={{ width: 120 }}
-                value={stateProductDetails.category}
-                onChange={handleOnchange}
-
-              />
-            </Form.Item>
-
-            <Form.Item
-              label="Giá"
-              name="price"
-              rules={[{ required: true, message: 'Please input your count price!' }]}
-            >
-              <InputComponent value={stateProductDetails.price} onChange={handleOnchangeDetails} name="price" />
-            </Form.Item>
-            <Form.Item
-              label="Description"
-              name="description"
-              rules={[{ required: true, message: 'Please input your count description!' }]}
-            >
-              <ReactQuill value={stateProductDetails.description} onChange={handleOnchangeDespcription} name="description" />
-            </Form.Item>
-
-            <Form.Item
-              label="Discount"
-              name="discount"
-              rules={[{ required: true, message: 'Please input your discount of product!' }]}
-            >
-              <InputComponent value={stateProductDetails.discount} onChange={handleOnchangeDetails} name="discount" />
-            </Form.Item>
-            <Form.Item
-              label="Images"
-              name="images"
-            // rules={[{ required: true, message: 'Please input 4 images!' }]}
-            >
-              <Loading isLoading={loadImageDetail}>
-                <div onClick={handleClickDetail} style={{ cursor: "pointer" }} name="images">
-                  {stateProductDetails.images[0] ? (
-                    <img src={stateProductDetails.images[0]} alt="upload image" className="img-after" height="40" width="30" />
-                  ) : (
-                    <img src="https://t4.ftcdn.net/jpg/04/81/13/43/360_F_481134373_0W4kg2yKeBRHNEklk4F9UXtGHdub3tYk.jpg" className="img-before" />
-                  )}
-
-
-
-                  {stateProductDetails.images[1] ? (
-                    <img src={stateProductDetails.images[1]} alt="upload image" className="img-after" height="40" width="30" />
-                  ) : (
-                    <img src="https://t4.ftcdn.net/jpg/04/81/13/43/360_F_481134373_0W4kg2yKeBRHNEklk4F9UXtGHdub3tYk.jpg" className="img-before" />
-                  )}
-
-                  {stateProductDetails.images[2] ? (
-                    <img src={stateProductDetails.images[2]} alt="upload image" className="img-after" height="40" width="30" />
-                  ) : (
-                    <img src="https://t4.ftcdn.net/jpg/04/81/13/43/360_F_481134373_0W4kg2yKeBRHNEklk4F9UXtGHdub3tYk.jpg" className="img-before" />
-                  )}
-
-                  {stateProductDetails.images[3] ? (
-                    <img src={stateProductDetails.images[3]} alt="upload image" className="img-after" height="40" width="30" />
-                  ) : (
-                    <img src="https://t4.ftcdn.net/jpg/04/81/13/43/360_F_481134373_0W4kg2yKeBRHNEklk4F9UXtGHdub3tYk.jpg" className="img-before" />
-                  )}
-                  <input
-                    id="image-upload"
-                    type="file"
-                    multiple
-                    ref={hiddenFileInputDetail}
-                    onChange={(event) => handleImageChangeDetail(event)}
-                    style={{ display: "none" }}
+                <Form.Item
+                  label="Loại"
+                  name="type"
+                  rules={[{ required: true, message: 'Vui lòng nhập loại sản phẩm!' }]}
+                  labelCol={{ span: 4 }}
+                >
+                  <Select
+                    name="type"
+                    // defaultValue="lucy"
+                    // style={{ width: 120 }}
+                    value={stateProductDetails.type}
+                    onChange={handleChangeSelectDetail}
+                    options={renderOptions(CLOTHING_TYPES)}
                   />
-                </div>
-              </Loading>
+                </Form.Item>
+                <Form.Item
+                  label="Danh mục"
+                  name="category"
+                  rules={[{ required: true, message: 'Please input your type!' }]}
+                  labelCol={{ span: 4 }}
+                >
+                  <Select
+                    name="category"
+                    // defaultValue="lucy"
+                    // style={{ width: 120 }}
+                    value={stateProductDetails.category}
+                    onChange={handleChangeSelectCateDetail}
+                    options={renderOptionsCate(categoryProduct?.data)}
+                  />
+                </Form.Item>
+                {stateProductDetails.category === 'add_category' && (
+                  <Form.Item
+                    label='Thêm'
+                    name="newCategory"
+                    rules={[{ required: true, message: 'Please input your type!' }]}
+                    labelCol={{ span: 4 }}
+                  >
+                    <InputComponent value={stateProductDetails.newCategory} onChange={handleOnchangeDetails} name="newCategory" />
+                  </Form.Item>
+                )}
+                <Form.Item
+                  label="Sizes"
+                  name="sizes"
+                  rules={[{ required: true, message: 'Please input your discount of product!' }]}
+                  labelCol={{ span: 4 }}
+                >
+                  <div name="sizes" >
+                    {renderSizeInputs()}
+                    <div style={{ marginBottom: '16px' }}>
+                      <Space>
+                        <Input
+                          placeholder="Kích cỡ"
+                          value={newSize.size}
+                          onChange={(e) => handleNewSizeChange(e.target.value, 'size')}
+                          style={{ width: '100px' }}
+                          marginBottom={20}
+                        />
+                        <Input
+                          style={{ width: '100px' }}
+                          placeholder="Số lượng"
+                          value={newSize.countInStock}
+                          onChange={(e) => handleNewSizeChange(e.target.value, 'countInStock')}
+                        />
+                        <Button onClick={handleAddSize}>Thêm</Button>
+                      </Space>
+                    </div>
+                  </div>
+
+                </Form.Item>
+                <Form.Item
+                  label="Giá"
+                  name="price"
+                  rules={[{ required: true, message: 'Vui lòng nhập giá bán!' }]}
+                  labelCol={{ span: 4 }}
+                >
+                  <InputComponent value={stateProductDetails.price} onChange={handleOnchangeDetails} name="price" />
+                </Form.Item>
+                <Form.Item
+                  label="Discount"
+                  name="discount"
+                  rules={[{ required: true, message: 'Vui lòng nhập discount, nhập 0 nếu không có discount!' }]}
+                  labelCol={{ span: 4 }}
+                >
+                  <InputComponent value={stateProductDetails.discount} onChange={handleOnchangeDetails} name="discount" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="Ảnh"
+                  name="images"
+                  rules={[{ required: true, message: 'Please input 4 images!' }]}
+                  labelCol={{ span: 4 }}
+                >
+                  <Loading isLoading={loadImageDetail}>
+                    <div onClick={handleClickDetail} style={{ cursor: "pointer" }} name="images">
+                      {stateProductDetails.images[0] ? (
+                        <img src={stateProductDetails.images[0]} alt="upload image" className="img-after" height="40" width="30" />
+                      ) : (
+                        <img src="https://t4.ftcdn.net/jpg/04/81/13/43/360_F_481134373_0W4kg2yKeBRHNEklk4F9UXtGHdub3tYk.jpg" className="img-before" />
+                      )}
 
 
-            </Form.Item>
 
-            <Form.Item
-              label="Sizes"
-              name="sizes"
-              rules={[{ required: true, message: 'Please input your discount of product!' }]}
-            >
-              <div name="sizes">
-                {renderSizeInputs()}
-                <div style={{ marginBottom: '16px' }}>
-                  <Space>
-                    <Input
-                      placeholder="Size"
-                      value={newSize.size}
-                      onChange={(e) => handleNewSizeChange(e.target.value, 'size')}
-                      style={{ width: '100px' }}
-                    />
-                    <Input
-                      style={{ width: '100px' }}
-                      placeholder="countInStock"
-                      value={newSize.countInStock}
-                      onChange={(e) => handleNewSizeChange(e.target.value, 'countInStock')}
-                    />
-                    <Button onClick={handleAddSize}>Add Size</Button>
-                  </Space>
-                </div>
-              </div>
+                      {stateProductDetails.images[1] ? (
+                        <img src={stateProductDetails.images[1]} alt="upload image" className="img-after" height="40" width="30" />
+                      ) : (
+                        <img src="https://t4.ftcdn.net/jpg/04/81/13/43/360_F_481134373_0W4kg2yKeBRHNEklk4F9UXtGHdub3tYk.jpg" className="img-before" />
+                      )}
 
-            </Form.Item>
+                      {stateProductDetails.images[2] ? (
+                        <img src={stateProductDetails.images[2]} alt="upload image" className="img-after" height="40" width="30" />
+                      ) : (
+                        <img src="https://t4.ftcdn.net/jpg/04/81/13/43/360_F_481134373_0W4kg2yKeBRHNEklk4F9UXtGHdub3tYk.jpg" className="img-before" />
+                      )}
+
+                      {stateProductDetails.images[3] ? (
+                        <img src={stateProductDetails.images[3]} alt="upload image" className="img-after" height="40" width="30" />
+                      ) : (
+                        <img src="https://t4.ftcdn.net/jpg/04/81/13/43/360_F_481134373_0W4kg2yKeBRHNEklk4F9UXtGHdub3tYk.jpg" className="img-before" />
+                      )}
+                      <input
+                        id="image-upload"
+                        type="file"
+                        multiple
+                        ref={hiddenFileInputDetail}
+                        onChange={(event) => handleImageChangeDetail(event)}
+                        style={{ display: "none" }}
+                      />
+                    </div>
+                  </Loading>
+
+
+                </Form.Item>
+                <Form.Item
+                  label="Mô tả"
+                  name="description"
+                  rules={[{ required: true, message: 'Mô tả không được để trống!' }]}
+                  labelCol={{ span: 4 }}
+
+                >
+                  <ReactQuill value={stateProductDetails.description} onChange={handleOnchangeDespcription} name="description" />
+                </Form.Item>
+
+
+
+              </Col>
+            </Row>
+
+
+
+
+
 
 
 

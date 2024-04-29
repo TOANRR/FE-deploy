@@ -19,6 +19,9 @@ export const WrapperTypeFeatured = styled.div`
     margin-left: 8%;
     color: #ffff;
     padding-top: 14px;
+    text-align: center; /* căn giữa văn bản */
+    margin: 0 auto; /* căn giữa phần tử */
+    width: 80%; /* Đảm bảo rằng chiều rộng không quá rộng */
 
 `
 export const WrapperButtonMore = styled(ButtonComponent)`

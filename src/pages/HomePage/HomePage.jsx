@@ -16,17 +16,22 @@ import { useState } from 'react'
 import Loading from '../../components/LoadingComponent/LoadingComponent'
 import { useDebounce } from '../../hooks/useDebounce'
 import { useDebounceArray } from '../../hooks/useDebounceArray'
+import { Button, Col, Row } from 'antd'
+import CarouselComponent from '../../components/CarouselComponent/CarouselComponent'
+import { animateScroll as scroll } from 'react-scroll';
+
+import './action.css'
 // import NavbarComponent from '../../components/NavbarComponent/NavbarComponent'
 // import ButtonComponent from '../../components/ButtonComponent/ButtonComponent'
 
 const HomePage = () => {
   const searchProduct = useSelector((state) => state?.product?.search)
-  const isImage = useSelector((state) => state?.product?.isImage)
+  // const isImage = useSelector((state) => state?.product?.isImage)
   const productImgs = useSelector((state) => state?.product?.productImgs)
   const dispatch = useDispatch()
 
   const searchDebounce = useDebounce(searchProduct, 200)
-  const searchImageDebounce = useDebounceArray(productImgs, 200)
+  // const searchImageDebounce = useDebounceArray(productImgs, 200)
 
   const refSearch = useRef()
   const [loading, setLoading] = useState(false)
@@ -34,22 +39,58 @@ const HomePage = () => {
   const [typeProducts, setTypeProducts] = useState([])
   const [limit, setLimit] = useState(8)
 
+
+
+  const fetchProductsType = async (type) => {
+    return await ProductService.getProductByType(type);
+  };
+  const que = useQuery({ queryKey: ['products-wo'], queryFn: () => fetchProductsType('women') })
+  const { data: productsWomen, isLoading: womenLoad } = que
+  console.log(que)
+  const { data: productsMen, isLoading: menLoad } = useQuery({ queryKey: ['products-men'], queryFn: () => fetchProductsType('men') })
+  const { data: productsKids, isLoading: kidLoad } = useQuery({ queryKey: ['products-kid'], queryFn: () => fetchProductsType('kids') })
   const fetchProductAll = async (context) => {
     // console.log('context', context)
     const limit = context?.queryKey && context?.queryKey[1]
     const search = context?.queryKey && context?.queryKey[2]
     const ids = context?.queryKey && context?.queryKey[3]
-    if (isImage) {
+    // if (isImage) {
 
-      const res = await ProductService.getAllProductImage(ids, limit)
-      return res
-    }
-    else {
-      const res = await ProductService.getAllProduct(search, limit)
-      return res
-    }
+    //   const res = await ProductService.getAllProductImage(ids, limit)
+    //   return res
+    // }
+    // else {
+    const res = await ProductService.getAllProduct(search, limit)
+    // if (productsWomen.length === 0) {
+    //   console.log("here")
+    //   setWomenLoad(true)
+    //   setProductsWomen(fetchProductsType('women').data)
+    //   setWomenLoad(false)
+
+
+    // }
+    // if (productsMen.length === 0) {
+    //   setMenLoad(true)
+    //   setProductsMen(fetchProductsType('women').data)
+    //   setMenLoad(false)
+
+    // }
+    // if (productsKids.length === 0) {
+    //   setKidLoad(true)
+    //   setProductsKids(fetchProductsType('women').data)
+    //   setKidLoad(false)
+
+    //}
+    return res
+    // }
 
   }
+  const scrollToSection = (sectionId) => {
+    scroll.scrollTo(document.getElementById(sectionId).offsetTop, {
+      smooth: true,
+      duration: 500,
+    });
+  };
   const fetchAllTypeProduct = async () => {
     const res = await ProductService.getAllTypeProduct()
     if (res?.status === 'OK') {
@@ -64,11 +105,22 @@ const HomePage = () => {
     // console.log(sum)
     return sum;
   }
-  const { isLoading, data: products, isPreviousData } = useQuery({ queryKey: ['products', limit, searchDebounce, searchImageDebounce], queryFn: fetchProductAll, retry: 3, retryDelay: 1000, keepPreviousData: true })
+
+  const { isLoading, data: products, isPreviousData } = useQuery({ queryKey: ['products', limit, searchDebounce], queryFn: fetchProductAll, retry: 3, retryDelay: 1000, keepPreviousData: true })
+
   // console.log('data', products?.data[0].sizes[0].countInStock)
   useEffect(() => {
     fetchAllTypeProduct()
   }, [])
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
 
 
   return (
@@ -76,17 +128,43 @@ const HomePage = () => {
       <Loading isLoading={isLoading || loading}>
         <div style={{ width: '100', margin: '0 auto', backgroundColor: '#000000', marginBottom: "30px" }}>
           <WrapperTypeProduct>
-            {typeProducts.map((item) => {
+            {/* {typeProducts.map((item) => {
               return (
                 <TypeProduct name={item} key={item} />
               )
-            })}
+            })} */}
           </WrapperTypeProduct>
         </div>
         <div className='body' style={{ width: '100%', backgroundColor: '#ffff', }}>
           <div id="container" style={{ height: '100%', width: '100%', margin: '0 auto' }}>
             <SliderComponent arrImages={[slider1, slider2, slider3]} />
           </div>
+          <Row gutter={[16, 16]} justify="space-between" style={{ marginTop: "30px" }}>
+            <Col span={8} className="banner-col" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+              <div className={`image-container ${isHovered ? 'hovered' : ''}`}>
+                <img src="https://www.gento.vn/wp-content/uploads/2023/05/xu-huong-thoi-trang-nam-0.jpg" alt="Men's Fashion" />
+                {isHovered && (
+                  <Button className="explore-button" onClick={() => scrollToSection('nam-gioi-section')}>Khám phá</Button>
+                )}
+              </div>
+            </Col>
+            <Col span={8} className="banner-col" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+              <div className={`image-container ${isHovered ? 'hovered' : ''}`}>
+                <img src="https://cdn.chanhtuoi.com/uploads/2021/09/top-thuong-hieu-thoi-trang-nu-duoc-ua-chuong.jpg" alt="Women's Fashion" />
+                {isHovered && (
+                  <Button className="explore-button" onClick={() => scrollToSection('nu-gioi-section')}>Khám phá</Button>
+                )}
+              </div>
+            </Col>
+            <Col span={8} className="banner-col" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+              <div className={`image-container ${isHovered ? 'hovered' : ''}`}>
+                <img src="https://cdn.tgdd.vn//News/1475421//10-thuong-hieu-thoi-trang-tre-em-noi-tieng-tai-7-845x500.jpg" alt="Kids' Fashion" />
+                {isHovered && (
+                  <Button className="explore-button" onClick={() => scrollToSection('be-section')}>Khám phá</Button>
+                )}
+              </div>
+            </Col>
+          </Row>
           <div style={{ width: '100%', height: "70px", margin: '0 auto', backgroundColor: '#000000', marginBottom: "30px", marginTop: "40px" }}>
             <WrapperTypeFeatured>FEATURED PRODUCTS</WrapperTypeFeatured>
           </div>
@@ -127,6 +205,29 @@ const HomePage = () => {
             </div>
 
           </div>
+          <div id="nam-gioi-section" style={{ width: '100%', height: "70px", margin: '0 auto', backgroundColor: '#000000', marginBottom: "30px", marginTop: "40px" }}>
+            <WrapperTypeFeatured>THỜI TRANG CHO NAM GIỚI</WrapperTypeFeatured>
+          </div>
+          <Loading isLoading={menLoad}>
+            {console.log(productsMen)}
+            <CarouselComponent products={productsMen} />
+          </Loading>
+
+          <div id="nu-gioi-section" style={{ width: '100%', height: "70px", margin: '0 auto', backgroundColor: '#000000', marginBottom: "30px", marginTop: "40px" }}>
+            <WrapperTypeFeatured>THỜI TRANG CHO NỮ GIỚI</WrapperTypeFeatured>
+          </div>
+          <Loading isLoading={womenLoad}>
+            {console.log(productsWomen)}
+            <CarouselComponent products={productsWomen} />
+          </Loading>
+          <div id="be-section" style={{ width: '100%', height: "70px", margin: '0 auto', backgroundColor: '#000000', marginBottom: "30px", marginTop: "40px" }}>
+            <WrapperTypeFeatured>THỜI TRANG CHO BÉ</WrapperTypeFeatured>
+          </div>
+          <Loading isLoading={kidLoad}>
+            {console.log(productsKids)}
+            <CarouselComponent products={productsKids} />
+          </Loading>
+
         </div>
       </Loading>
 
