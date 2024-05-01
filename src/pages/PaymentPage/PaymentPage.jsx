@@ -159,8 +159,34 @@ const PaymentPage = () => {
     }, [priceMemo, priceDiscountMemo, diliveryPriceMemo])
 
     const handlePay = async () => {
-        const res = await PaymentService.getVnpay(order)
-        console.log(res.data)
+        if (user?.access_token && order?.orderItemsSlected && user?.name
+            && user?.address && user?.phone && user?.city && priceMemo && user?.id) {
+            // eslint-disable-next-line no-unused-expressions
+            mutationAddOrder.mutate(
+                {
+                    token: user?.access_token,
+                    orderItems: order?.orderItemsSlected,
+                    fullName: user?.name,
+                    address: user?.address,
+                    phone: user?.phone,
+                    city: user?.city,
+                    paymentMethod: payment,
+                    itemsPrice: priceMemo,
+                    shippingPrice: diliveryPriceMemo,
+                    totalPrice: totalPriceMemo,
+                    user: user?.id,
+                    district: user?.district,
+                    ward: user?.ward,
+                    delivery: delivery
+
+                }
+            )
+        }
+
+        const res = await PaymentService.getVnpay(dataAdd?.data)
+
+        // console.log(res.data)
+        // window.open(res.data, '_blank');
         window.location.href = res.data;
 
     }
@@ -182,7 +208,8 @@ const PaymentPage = () => {
                     totalPrice: totalPriceMemo,
                     user: user?.id,
                     district: user?.district,
-                    ward: user?.ward
+                    ward: user?.ward,
+                    delivery: delivery
 
                 }
             )
@@ -222,15 +249,18 @@ const PaymentPage = () => {
                 arrayOrdered.push(element.product)
             });
             dispatch(removeAllOrderProduct({ listChecked: arrayOrdered }))
-            message.success('Đặt hàng thành công')
-            navigate('/orderSuccess', {
-                state: {
-                    delivery,
-                    payment,
-                    orders: order?.orderItemsSlected,
-                    totalPriceMemo: totalPriceMemo
-                }
-            })
+            if (dataAdd?.data?.paymentMethod !== "vnpay") {
+                message.success('Đặt hàng thành công')
+                navigate('/orderSuccess', {
+                    state: {
+                        delivery,
+                        payment,
+                        orders: order?.orderItemsSlected,
+                        totalPriceMemo: totalPriceMemo
+                    }
+                })
+            }
+
         } else if (dataAdd?.status === "ERR") {
             message.error(dataAdd?.message)
         }
@@ -289,7 +319,8 @@ const PaymentPage = () => {
                 totalPrice: totalPriceMemo,
                 user: user?.id,
                 isPaid: true,
-                paidAt: details.update_time
+                paidAt: details.update_time,
+                delivery: delivery
             }
         )
     }

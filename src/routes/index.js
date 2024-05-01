@@ -15,6 +15,8 @@ import DetailsOrderPage from "../pages/DetailsOrderPage/DetailsOrderPage";
 import UploadImageComponent from "../components/UploadImageComponent/UploadImageComponent";
 import FirebaseImageUpload from "../components/FirebaseImage/FirebaseImageUpload";
 import MyComponent from "../components/FirebaseImage/addressTest";
+import OrderSuccessVnpay from "../pages/OrderSuccessVnpay/OrderSuccessVnpay";
+
 export const routes = [
     {
         path: '/',
@@ -45,6 +47,11 @@ export const routes = [
     {
         path: '/orderSuccess',
         page: OrderSucess,
+        isShowHeader: true
+    },
+    {
+        path: '/orderSuccessVnpay',
+        page: OrderSuccessVnpay,
         isShowHeader: true
     },
     {
