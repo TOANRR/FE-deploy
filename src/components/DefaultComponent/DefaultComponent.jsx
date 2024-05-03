@@ -3,11 +3,13 @@ import HeaderComponent from '../HeaderComponent/HeaderComponent'
 import Footer from '../FooterComponent/Footer'
 import ServiceSupport from '../ServiceSupport/ServiceSupport'
 import { ConfigProvider } from 'antd'
+import HeadNavComponent from '../HeadNavComponent/HeadNavComponent'
 
 const DefaultComponent = ({ children }) => {
   return (
     <div>
       <HeaderComponent />
+      <HeadNavComponent />
       <ConfigProvider
         theme={{
           token: {

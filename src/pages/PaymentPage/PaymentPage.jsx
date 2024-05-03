@@ -383,7 +383,7 @@ const PaymentPage = () => {
                                 <WrapperInfo>
                                     <div>
                                         <span>Địa chỉ: </span>
-                                        <span style={{ fontWeight: 'bold' }}>{`${user?.address} ${user?.ward} ${user?.district}${user?.city}`} </span>
+                                        <span style={{ fontWeight: 'bold' }}>{`${user?.address} ${user?.ward} ${user?.district} ${user?.city}`} </span>
                                         <span onClick={handleChangeAddress} style={{ color: 'blue', cursor: 'pointer' }}>Thay đổi</span>
                                     </div>
                                 </WrapperInfo>

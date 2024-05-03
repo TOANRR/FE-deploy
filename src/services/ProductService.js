@@ -32,6 +32,12 @@ export const createProduct = async (data) => {
 
 export const getDetailsProduct = async (id) => {
     const res = await axios.get(`${process.env.REACT_APP_API_URL}/product/get-details/${id}`)
+    console.log(res.data)
+    return res.data
+}
+export const getDetailsProductNostar = async (id) => {
+    const res = await axios.get(`${process.env.REACT_APP_API_URL}/product/get-details-admin/${id}`)
+    console.log(res.data)
     return res.data
 }
 export const updateProduct = async (id, access_token, data) => {
@@ -87,6 +93,22 @@ export const getProductByType = async (data) => {
 export const getCategories = async () => {
 
     const res = await axios.get(`${process.env.REACT_APP_API_URL}/product/categories`)
+    return res.data
+
+}
+export const createReview = async (data, access_token) => {
+
+    const res = await axios.post(`${process.env.REACT_APP_API_URL}/review/create-review`, data, {
+        headers: {
+            token: `Bearer ${access_token}`,
+        }
+    })
+    return res.data
+
+}
+export const getReview = async (id) => {
+
+    const res = await axios.get(`${process.env.REACT_APP_API_URL}/review/get-all-review/${id}`)
     return res.data
 
 }

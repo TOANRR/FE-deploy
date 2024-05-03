@@ -262,7 +262,7 @@ const AdminProduct = () => {
   }
 
   const fetchGetDetailsProduct = async (rowSelected) => {
-    const res = await ProductService.getDetailsProduct(rowSelected)
+    const res = await ProductService.getDetailsProductNostar(rowSelected)
     if (res?.data) {
       setStateProductDetails({
         name: res?.data?.name,
