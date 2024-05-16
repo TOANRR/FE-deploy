@@ -1,22 +1,29 @@
 import { Menu } from 'antd'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { getItem } from '../../utils'
-import { UserOutlined, AppstoreOutlined } from '@ant-design/icons'
+import { UserOutlined, AppstoreOutlined, ShoppingCartOutlined, DashboardOutlined } from '@ant-design/icons'
 import HeaderComponent from '../../components/HeaderComponent/HeaderComponent';
 import AdminUser from '../../components/AdminUser/AdminUser';
 import AdminProduct from '../../components/AdminProduct/AdminProduct';
+import AdminOrder from '../../components/AdminOrder/AdminOrder';
+import AdminDashboard from '../../components/AdminDashboard/AdminDashboard';
 
 
 const AdminPage = () => {
   const items = [
+    getItem('Dashboard', 'dashboard', <DashboardOutlined />),
     getItem('Người dùng', 'user', <UserOutlined />),
-    getItem('Sản phẩm', 'product', <AppstoreOutlined />)
+    getItem('Sản phẩm', 'product', <AppstoreOutlined />),
+    getItem('Đơn hàng', 'order', <ShoppingCartOutlined />),
+
+
   ];
 
-
-  const rootSubmenuKeys = ['user', 'product'];
-  const [openKeys, setOpenKeys] = useState(['user']);
-  const [keySelected, setKeySelected] = useState('user')
+  const searchParams = new URLSearchParams(window.location.search);
+  const paramValue = searchParams.get('select');
+  // const rootSubmenuKeys = ['user', 'product', 'order', 'dashboard'];
+  const [openKeys, setOpenKeys] = useState(paramValue);
+  const [keySelected, setKeySelected] = useState(paramValue || 'dashboard')
   const renderPage = (key) => {
     switch (key) {
       case 'user':
@@ -29,6 +36,18 @@ const AdminPage = () => {
         {
           return (
             <AdminProduct />
+          )
+        }
+      case 'order':
+        {
+          return (
+            <AdminOrder />
+          )
+        }
+      case 'dashboard':
+        {
+          return (
+            <AdminDashboard />
           )
         }
       default:
@@ -48,13 +67,20 @@ const AdminPage = () => {
 
   const handleOnCLick = ({ key }) => {
     setKeySelected(key)
-    console.log('keyselected', keySelected)
+    updateSearchParam(key);
   }
+  const updateSearchParam = (key) => {
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.set('select', key);
+    const newSearchString = searchParams.toString();
+    const newURL = window.location.pathname + '?' + newSearchString;
+    window.history.replaceState(null, null, newURL);
+  };
 
   return (
     <>
       <HeaderComponent isHiddenSearch isHiddenCart />
-      <div style={{ display: 'flex', }}>
+      <div style={{ display: 'flex' }}>
         <Menu
           mode="inline"
           openKeys={openKeys}
