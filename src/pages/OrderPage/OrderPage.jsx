@@ -373,7 +373,7 @@ const OrderPage = () => {
             title: <a href="">Giỏ hàng</a>,
           }
         ]}
-        style={{ marginBottom: "25px", paddingTop: "30px", fontSize: "20px", paddingLeft: "3%" }}
+        style={{ marginBottom: "25px", paddingTop: "30px", fontSize: "18px", paddingLeft: "3%", fontWeight: "500" }}
       />
       <div style={{ height: '100%', width: '1270px', margin: '0 auto' }}>
 

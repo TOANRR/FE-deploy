@@ -6,7 +6,7 @@ const HeadNavComponent = () => {
             <WrapperTypeProduct>
 
                 <NavLink to="/about-us">ABOUT US</NavLink>
-                <NavLink to="/">FAQ</NavLink>
+                {/* <NavLink to="/">FAQ</NavLink> */}
                 <NavLink to="/product/filter">SẢN PHẨM CỦA CHÚNG TÔI</NavLink>
 
 

@@ -1,14 +1,15 @@
 import React from 'react'
-import { WrapperAllPrice, WrapperContentInfo, WrapperHeaderUser, WrapperInfoUser, WrapperItem, WrapperItemLabel, WrapperLabel, WrapperNameProduct, WrapperProduct, WrapperStyleContent } from './style'
+import { WrapperAllPrice, WrapperContentInfo, WrapperHeaderUser, WrapperInfoUser, WrapperItem, WrapperItemLabel, WrapperLabel, WrapperNameProduct, WrapperProduct, WrapperStyleContent, WrapperWatermark } from './style'
 import logo from '../../assets/images/logo.png'
 import { useLocation, useParams } from 'react-router-dom'
 import { useEffect } from 'react'
 import * as OrderService from '../../services/OrderService'
 import { useQuery } from '@tanstack/react-query'
 import { orderContant } from '../../contant'
-import { convertPrice } from '../../utils'
+import { convertPrice, formatDate } from '../../utils'
 import { useMemo } from 'react'
 import Loading from '../../components/LoadingComponent/LoadingComponent'
+import { Breadcrumb } from 'antd'
 
 const DetailsOrderPage = () => {
     const params = useParams()
@@ -33,9 +34,24 @@ const DetailsOrderPage = () => {
 
     return (
         <Loading isLoading={isLoading}>
-            <div style={{ width: '100%', minHeight: '100vh', background: '#f5f5fa', marginBottom: "50px" }}>
-                <div style={{ width: '1270px', margin: '0 auto' }}>
-                    <h4>Chi tiết đơn hàng</h4>
+            <div style={{ width: '100%', minHeight: '100vh', background: '#f5f5fa', marginBottom: "50px", display: 'flex', justifyContent: 'center' }}>
+
+                <div style={{ width: '95%', maxWidth: '1270px', margin: '0 auto' }}>
+                    <Breadcrumb
+                        items={[
+                            {
+                                title: <a href="/">Trang chủ</a>,
+                            },
+                            {
+                                title: <a href="/my-order">Đơn hàng của tôi</a>,
+                            },
+                            {
+                                title: <a href="">Chi tiết đơn hàng</a>,
+                            }
+                        ]}
+                        style={{ fontSize: "18px", marginTop: "1%", marginBottom: "2%", fontWeight: "500" }}
+                    />
+                    {/* <h3 style={{ fontStyle: "italic" }}>Chi tiết đơn hàng</h3> */}
                     <WrapperHeaderUser>
                         <WrapperInfoUser>
                             <WrapperLabel>Địa chỉ người nhận</WrapperLabel>
@@ -49,23 +65,34 @@ const DetailsOrderPage = () => {
                             <WrapperLabel>Hình thức giao hàng</WrapperLabel>
                             <WrapperContentInfo>
                                 <div className='delivery-info'><span className='name-delivery'>FAST </span>Giao hàng tiết kiệm</div>
-                                <div className='delivery-fee'><span>Phí giao hàng: </span> {data?.shippingPrice}</div>
+                                <div className='delivery-fee'><span>Phí giao hàng: </span> {convertPrice(data?.shippingPrice)}</div>
+                                {(data?.deliveryStatus === 'delivering' || data?.deliveryStatus === 'delivered') && (
+
+                                    <div className='delivery-fee'>{data?.deliveryStatus === 'delivering' ? 'Đang giao: ' : 'Đã giao: '}
+                                        {formatDate(data?.deliveredAt)}</div>
+
+                                )}
                             </WrapperContentInfo>
                         </WrapperInfoUser>
                         <WrapperInfoUser>
                             <WrapperLabel>Hình thức thanh toán</WrapperLabel>
                             <WrapperContentInfo>
                                 <div className='payment-info'>{orderContant.payment[data?.paymentMethod]}</div>
-                                <div className='status-payment'>{data?.isPaid ? 'Đã thanh toán' : 'Chưa thanh toán'}</div>
+                                <div className='status-payment'>{data?.isPaid ? `Đã thanh toán, ${formatDate(data?.paidAt)}` : 'Chưa thanh toán'}</div>
+
                             </WrapperContentInfo>
                         </WrapperInfoUser>
                     </WrapperHeaderUser>
                     <WrapperStyleContent>
+                        {data?.isCancel && (
+                            <WrapperWatermark>Đã bị hủy</WrapperWatermark>
+                        )}
                         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <div style={{ width: '670px' }}>Sản phẩm</div>
+                            <div style={{ width: '470px' }}>Sản phẩm</div>
+                            <WrapperItemLabel>Kích cỡ</WrapperItemLabel>
                             <WrapperItemLabel>Giá</WrapperItemLabel>
                             <WrapperItemLabel>Số lượng</WrapperItemLabel>
-                            <WrapperItemLabel>Giảm giá</WrapperItemLabel>
+                            <WrapperItemLabel>Giảm</WrapperItemLabel>
                         </div>
                         {data?.orderItems?.map((order) => {
                             return (
@@ -89,6 +116,7 @@ const DetailsOrderPage = () => {
                                             height: '70px',
                                         }}>{order?.name}</div>
                                     </WrapperNameProduct>
+                                    <WrapperItem>{order?.size}</WrapperItem>
                                     <WrapperItem>{convertPrice(order?.price)}</WrapperItem>
                                     <WrapperItem>{order?.amount}</WrapperItem>
                                     <WrapperItem>{order?.discount ? convertPrice(order?.price * order?.discount * order?.amount / 100) : '0 VND'}</WrapperItem>

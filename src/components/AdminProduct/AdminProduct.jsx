@@ -419,7 +419,7 @@ const AdminProduct = () => {
   const ImageCell = ({ images }) => (
     <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
       {images.map((image, index) => (
-        <img key={index} src={image} alt={`Ảnh ${index}`} style={{ width: '50px', height: 'auto' }} />
+        <img key={index} src={image} alt={`Ảnh ${index}`} style={{ width: 'auto', height: '40px' }} />
       ))}
     </div>
   );

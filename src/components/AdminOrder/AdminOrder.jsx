@@ -17,7 +17,7 @@ import * as OrderServices from '../../services/OrderService'
 import * as UserService from '../../services/UserService'
 import moment from 'moment';
 
-import { useQuery } from '@tanstack/react-query'
+import { MutationCache, useQuery } from '@tanstack/react-query'
 import { DeleteOutlined, EditOutlined, SearchOutlined, CloseCircleOutlined } from '@ant-design/icons'
 const { Option } = Select;
 const initialOrderState = {
@@ -41,6 +41,7 @@ const initialOrderState = {
     deliveryStatus: 'not_delivered',
     deliveredAt: null,
     isCancel: false,
+    cancelReason: ''
 };
 
 const AdminOrder = () => {
@@ -57,6 +58,8 @@ const AdminOrder = () => {
     const [stateOrderDetails, setStateOrderDetails] = useState(initialOrderState);
     const [start, setStart] = useState('');
     const [end, setEnd] = useState('');
+    const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+    const [cancelReason, setCancelReason] = useState('');
 
     const [form] = Form.useForm();
 
@@ -82,6 +85,18 @@ const AdminOrder = () => {
             const res = OrderServices.deleteOrder(
                 id,
                 access_token)
+            return res
+        },
+    )
+
+    const mutationCancel = useMutationHooks(
+        (data) => {
+            const { id,
+                access_token, reason
+            } = data
+            const res = OrderServices.cancelOrderAd(
+                id,
+                access_token, reason)
             return res
         },
     )
@@ -557,9 +572,26 @@ const AdminOrder = () => {
             setStateOrderDetails({ ...stateOrderDetails, deliveryStatus: value, deliveredAt: '' });
         }
     };
-    const handleCancelOrder = () => {
+    // const handleCancelOrder = () => {
+    //     mutationCancel.mutate({ id: stateOrderDetails._id, access_token: user?.access_token }, {
+    //         onSettled: () => {
+    //             queryOrder.refetch()
+    //         }
+    //     })
 
-    }
+    // }
+    const handleCancelOrder = () => {
+        setIsCancelModalOpen(true);
+    };
+
+    const confirmCancelOrder = () => {
+        mutationCancel.mutate({ id: stateOrderDetails._id, access_token: user?.access_token, reason: cancelReason }, {
+            onSettled: () => {
+                queryOrder.refetch();
+                setIsCancelModalOpen(false);
+            }
+        });
+    };
     const onUpdateOrder = async () => {
 
         mutationUpdate.mutate({ id: rowSelected, access_token: user?.access_token, ...stateOrderDetails }, {
@@ -570,6 +602,7 @@ const AdminOrder = () => {
 
     }
     const { data: dataUpdated, isPending: isLoadingUpdated, isSuccess: isSuccessUpdated, isError: isErrorUpdated } = mutationUpdate
+    const { data: dataCancel, isPending: isLoadingCancel, isSuccess: isSuccessCancel, isError: isErrorCancle } = mutationCancel
 
     useEffect(() => {
         queryOrder.refetch();
@@ -582,6 +615,14 @@ const AdminOrder = () => {
             message.error()
         }
     }, [isSuccessUpdated])
+    useEffect(() => {
+        if (isSuccessCancel && dataCancel?.status === 'OK') {
+            message.success("Hủy đơn hàng  thành công")
+            handleCloseDrawer()
+        } else if (dataCancel?.status === 'ERR') {
+            message.error(dataCancel?.message)
+        }
+    }, [isSuccessCancel])
     const handleSearchOrder = async () => {
         if (searchRange.length !== 2) {
             message.error("Please select a search range");
@@ -702,9 +743,15 @@ const AdminOrder = () => {
                                     </Form.Item>
                                 )}
                                 {stateOrderDetails.isCancel && (
-                                    <Form.Item label="Đã bị hủy" labelCol={{ span: 4 }}>
-                                        <CloseCircleOutlined style={{ color: 'red' }} />
-                                    </Form.Item>
+                                    <div>
+                                        <Form.Item label="Đã bị hủy" labelCol={{ span: 4 }}>
+                                            <CloseCircleOutlined style={{ color: 'red' }} />
+                                        </Form.Item>
+                                        <Form.Item label="Lý do hủy" labelCol={{ span: 4 }}>
+                                            {stateOrderDetails.cancelReason}
+                                        </Form.Item>
+                                    </div>
+
                                 )}
                             </Col>
                         </Row>
@@ -726,13 +773,13 @@ const AdminOrder = () => {
                                 <Button style={{ backgroundColor: "#000000", color: "#fff" }} disabled={stateOrderDetails.isCancel} htmlType="submit">
                                     Cập nhật
                                 </Button>
-                                {/* <Button
+                                <Button
                                     style={{ backgroundColor: 'red', color: '#fff' }}
                                     onClick={handleCancelOrder}
                                     disabled={stateOrderDetails.isCancel}
                                 >
                                     Hủy đơn hàng
-                                </Button> */}
+                                </Button>
                             </div>
 
                         </Form.Item>
@@ -744,6 +791,24 @@ const AdminOrder = () => {
                     <div>Bạn có chắc xóa đơn hàng này không?</div>
                 </Loading>
             </ModalComponent >
+            <ModalComponent
+                title="Xác nhận hủy đơn hàng"
+                open={isCancelModalOpen}
+                onCancel={() => setIsCancelModalOpen(false)}
+                onOk={confirmCancelOrder}
+            >
+                <Loading isLoading={isLoadingCancel}>
+                    <div>
+                        Bạn có chắc chắn muốn hủy đơn hàng này không? Vui lòng cung cấp lý do:
+                        <Input.TextArea
+                            rows={4}
+                            value={cancelReason}
+                            onChange={(e) => setCancelReason(e.target.value)}
+                            placeholder="Lý do hủy đơn hàng"
+                        />
+                    </div>
+                </Loading>
+            </ModalComponent>
         </div >
     )
 }

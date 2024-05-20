@@ -35,6 +35,7 @@ const SignUpPage = () => {
   useEffect(() => {
     if (data?.status === 'OK') {
       message.success()
+      navigate('/sign-in')
     }
     else if (data?.status === 'ERR') {
       message.error()
@@ -115,7 +116,7 @@ const SignUpPage = () => {
               onClick={handleSignUp}
               size={40}
               styleButton={{
-                background: 'rgb(255, 57, 69)',
+                background: '#000000',
                 height: '48px',
                 width: '100%',
                 border: 'none',

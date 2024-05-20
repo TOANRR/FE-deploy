@@ -19,7 +19,8 @@ const ProductDetailsPage = () => {
               title: <a href="">Chi tiết sản phẩm</a>,
             }
           ]}
-          style={{ fontSize: "20px" }}
+          style={{ fontSize: "18px", fontWeight: "500" }}
+
         />
         <ProductDetailsComponent idProduct={id} />
       </div>

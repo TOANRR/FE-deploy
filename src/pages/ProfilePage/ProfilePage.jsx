@@ -261,7 +261,8 @@ const ProfilePage = () => {
                         title: <a href="">Thông tin người dùng</a>,
                     }
                 ]}
-                style={{ fontSize: "20px" }}
+                style={{ fontSize: "18px", fontWeight: "500" }}
+
             />
             <Loading isLoading={isPending}>
                 <Row>
@@ -357,7 +358,7 @@ const ProfilePage = () => {
                                 className="image-upload-button"
                                 onClick={handleUpdate}
                             >
-                                Cập nhật
+                                CẬP NHẬT
                             </button>
                         </WrapperContentProfile></Col>
                 </Row>

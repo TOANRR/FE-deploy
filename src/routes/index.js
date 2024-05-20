@@ -20,7 +20,7 @@ import SearchImage from "../pages/SearchImagePage/SearchImagePage"
 import OrderSuccessVnpay from "../pages/OrderSuccessVnpay/OrderSuccessVnpay";
 import AboutUsPage from "../pages/AboutUsPage/AboutUsPage";
 import LoginSuccess from "../pages/LoginSuccessPage/LoginSuccessPage";
-
+import ChangePassword from "../pages/ChangePasswordPage/ChangePasswordPage"
 export const routes = [
     {
         path: '/',
@@ -135,6 +135,12 @@ export const routes = [
         path: '/search-image',
         page: SearchImage,
         isShowHeader: true
+    },
+    {
+        path: '/change-password',
+        page: ChangePassword,
+        isShowHeader: true,
+        isAuth: true
     }
 
 ] 

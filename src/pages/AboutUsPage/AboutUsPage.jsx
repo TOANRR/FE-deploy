@@ -113,7 +113,7 @@ const AboutUsPage = () => {
                         title: <a href="">About us</a>,
                     }
                 ]}
-               style= {{ marginBottom: "25px", paddingTop: "30px", fontSize: "20px", paddingLeft: "3%" }}
+               style= {{ marginBottom: "25px", paddingTop: "30px", fontSize: "20px", paddingLeft: "3%" , fontWeight:"500"}}
             />
         <Wrapper >
        

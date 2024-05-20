@@ -4,7 +4,8 @@ import styled from 'styled-components';
 import * as OrderServices from '../../services/OrderService'
 import { useSelector } from 'react-redux';
 import { convertPrice } from '../../utils';
-import RevenueChart from '../FirebaseImage/addressTest';
+import RevenueChart from '../RevenueChartComponent/RevenueChartComponent';
+import UserCountChart from '../UserChartComponent/UserChartComponent';
 
 const RectangleWrapper = styled.div`
     width: 200px;
@@ -98,6 +99,9 @@ const AdminDashboard = () => {
                 <Col span={20} style={{ marginTop: "50px" }}>
                     <RevenueChart />
 
+                </Col>
+                <Col span={20} style={{ marginTop: "50px" }}>
+                    <UserCountChart />
                 </Col>
             </Row>
         </div>

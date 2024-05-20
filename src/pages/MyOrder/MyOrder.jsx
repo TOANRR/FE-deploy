@@ -1,92 +1,136 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import Loading from '../../components/LoadingComponent/LoadingComponent';
 import { useQuery } from '@tanstack/react-query';
-import * as OrderService from '../../services/OrderService'
+import * as OrderService from '../../services/OrderService';
 import { useSelector } from 'react-redux';
 import { convertPrice } from '../../utils';
 import { WrapperItemOrder, WrapperListOrder, WrapperHeaderItem, WrapperFooterItem, WrapperContainer, WrapperStatus } from './style';
 import ButtonComponent from '../../components/ButtonComponent/ButtonComponent';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useMutationHooks } from '../../hooks/useMutationHook';
-import * as message from '../../components/MessageComponent/MessageComponent'
-import { Breadcrumb } from 'antd';
+import * as message from '../../components/MessageComponent/MessageComponent';
+import { Breadcrumb, Menu, Modal, Input } from 'antd';
 
 const MyOrderPage = () => {
-    const location = useLocation()
-    const { state } = location
-    console.log(location)
-    const user = useSelector((state) => state.user)
+    const location = useLocation();
+    const { state } = location;
+    console.log(location);
+    const user = useSelector((state) => state.user);
+    const [activeMenu, setActiveMenu] = useState('all'); // State for active menu item
+    const navigate = useNavigate();
 
-    const navigate = useNavigate()
-    const fetchMyOrder = async () => {
-        // console.log(state.id, state.token)
-        const res = await OrderService.getOrderByUserId(state?.id, state?.token)
-        return res.data
-    }
+    const [orders, setOrders] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [cancelReason, setCancelReason] = useState('');
+    const [selectedOrder, setSelectedOrder] = useState(null);
 
-    const queryOrder = useQuery({ queryKey: ['myorders'], queryFn: fetchMyOrder })
-    const { isLoading, data } = queryOrder
+    const handleMenuClick = (key) => {
+        setActiveMenu(key);
+        fetchOrdersByStatus(key);
+    };
+
+    const fetchOrdersByStatus = async (status) => {
+        setIsLoading(true);
+        try {
+            const response = await OrderService.getOrdersByStatus(status, user.id, user.access_token);
+            setOrders(response.data);
+        } catch (error) {
+            console.error('Error fetching orders:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchOrdersByStatus('all');
+    }, []);
 
     const handleDetailsOrder = (id) => {
         navigate(`/details-order/${id}`, {
             state: {
                 token: state?.token
             }
-        })
-    }
+        });
+    };
 
     const mutation = useMutationHooks(
         (data) => {
-            const { id, token, orderItems, userId } = data
-            const res = OrderService.cancelOrder(id, token, orderItems, userId)
-            return res
+            const { id, token, orderItems, userId, reason } = data;
+            return OrderService.cancelOrder(id, token, orderItems, userId, reason);
         }
-    )
+    );
 
-    const handleCanceOrder = (order) => {
-        mutation.mutate({ id: order._id, token: state.token, orderItems: order?.orderItems, userId: user.id }, {
-            onSuccess: () => {
-                queryOrder.refetch()
-            }
-        })
-    }
-    const { isPending: isLoadingCancel, isSuccess: isSuccessCancel, isError: isErrorCancle, data: dataCancel } = mutation
+    const handleCancelOrder = (order) => {
+        setSelectedOrder(order);
+        setIsModalVisible(true);
+    };
+
+    const handleConfirmCancel = () => {
+        if (selectedOrder) {
+            mutation.mutate(
+                { id: selectedOrder._id, token: state.token, orderItems: selectedOrder?.orderItems, userId: user.id, reason: cancelReason },
+                {
+                    onSuccess: () => {
+                        fetchOrdersByStatus(activeMenu); // Refresh order list after cancellation
+                    }
+                }
+            );
+            setIsModalVisible(false);
+            setCancelReason('');
+        }
+    };
+
+    const { isPending: isLoadingCancel, isSuccess: isSuccessCancel, isError: isErrorCancel, data: dataCancel } = mutation;
 
     useEffect(() => {
         if (isSuccessCancel && dataCancel?.status === 'OK') {
-            message.success()
-        } else if (isErrorCancle) {
-            message.error()
+            message.success('Đã hủy đơn hàng thành công!');
+        } else if (dataCancel?.status === 'ERR') {
+            message.error(dataCancel.message);
         }
-    }, [isErrorCancle, isSuccessCancel])
+    }, [isErrorCancel, isSuccessCancel]);
 
     const renderProduct = (data) => {
         return data?.map((order, index) => {
-            return <WrapperHeaderItem key={index}>
-                <img src={order?.image}
-                    style={{
-                        width: '70px',
-                        height: '70px',
-                        objectFit: 'cover',
-                        border: '1px solid rgb(238, 238, 238)',
-                        padding: '2px'
-                    }}
-                />
-                <div style={{
-                    width: 260,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                    marginLeft: '10px'
-                }}>{order?.name}</div>
-                <span style={{ fontSize: '13px', color: '#242424', marginLeft: 'auto' }}>{convertPrice(order?.price)}</span>
-            </WrapperHeaderItem>
-        })
-    }
+            return (
+                <WrapperHeaderItem key={index}>
+                    <img src={order?.image}
+                        style={{
+                            width: '70px',
+                            height: '70px',
+                            objectFit: 'cover',
+                            border: '1px solid rgb(238, 238, 238)',
+                            padding: '2px'
+                        }}
+                    />
+                    <div style={{
+                        width: 260,
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                        marginLeft: '10px'
+                    }}>{order?.name}</div>
+                    <span style={{ fontSize: '13px', color: '#242424', marginLeft: 'auto' }}>{convertPrice(order?.price)}</span>
+                </WrapperHeaderItem>
+            );
+        });
+    };
+
+    const getDeliveryStatus = (order) => {
+        if (order.isCancel) {
+            return 'Đã hủy';
+        } else if (order.isDelivered) {
+            return 'Đã vận chuyển';
+        } else if (order.deliveryStatus === 'delivering') {
+            return 'Đang vận chuyển';
+        } else {
+            return 'Chưa giao hàng';
+        }
+    };
 
     return (
         <Loading isLoading={isLoading || isLoadingCancel}>
-
             <WrapperContainer>
                 <div style={{ height: '100%', width: '1270px', margin: '0 auto' }}>
                     <Breadcrumb
@@ -98,23 +142,30 @@ const MyOrderPage = () => {
                                 title: <a href="">Đơn hàng của tôi</a>,
                             }
                         ]}
-                        style={{ fontSize: "20px" }}
+                        style={{ fontSize: "18px", fontWeight: "500" }}
                     />
+                    <Menu mode="horizontal" selectedKeys={[activeMenu]} onClick={({ key }) => handleMenuClick(key)} style={{ width: "82%", margin: "0 auto", marginTop: "2%" }}>
+                        <Menu.Item key="all"><div style={{ fontSize: '14px', color: '#555555', fontWeight: '500' }}>Tất cả đơn hàng</div></Menu.Item>
+                        <Menu.Item key="unpaid"><div style={{ fontSize: '14px', color: '#555555', fontWeight: '500' }}>Chưa thanh toán</div></Menu.Item>
+                        <Menu.Item key="paid"><div style={{ fontSize: '14px', color: '#555555', fontWeight: '500' }}>Đã thanh toán</div></Menu.Item>
+                        <Menu.Item key="not_shipped"><div style={{ fontSize: '14px', color: '#555555', fontWeight: '500' }}>Chưa vận chuyển</div></Menu.Item>
+                        <Menu.Item key="shipping"><div style={{ fontSize: '14px', color: '#555555', fontWeight: '500' }}>Đang vận chuyển</div></Menu.Item>
+                        <Menu.Item key="shipped"><div style={{ fontSize: '14px', color: '#555555', fontWeight: '500' }}>Hoàn thành</div></Menu.Item>
+                        <Menu.Item key="cancelled"><div style={{ fontSize: '14px', color: '#555555', fontWeight: '500' }}>Đã hủy</div></Menu.Item>
+                    </Menu>
                     <WrapperListOrder>
-                        {data?.map((order, index) => {
+                        {orders?.map((order, index) => {
                             return (
                                 <WrapperItemOrder key={index}>
                                     <WrapperStatus>
                                         {
                                             (!order?.isCancel) ? (<div>
                                                 <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Trạng thái</span>
-                                                <div><span style={{ color: 'rgb(255, 66, 78)', paddingTop: "20px" }}>Giao hàng: </span>{`${order.isDelivered ? ' Đã giao hàng' : ' Chưa giao hàng'}`}</div>
+                                                <div><span style={{ color: 'rgb(255, 66, 78)', paddingTop: "20px" }}>Giao hàng: </span>{getDeliveryStatus(order)}</div>
                                                 <div><span style={{ color: 'rgb(255, 66, 78)' }}>Thanh toán:</span>{`${order.isPaid ? ' Đã thanh toán' : ' Chưa thanh toán'}`}</div>
-
                                             </div>) : (<div><span style={{ fontSize: '14px', fontWeight: 'bold' }}>Trạng thái</span>
                                                 <div><span style={{ color: "red", fontWeight: "600" }}>Đã bị hủy</span></div></div>)
                                         }
-
                                     </WrapperStatus>
 
                                     {renderProduct(order?.orderItems)}
@@ -128,7 +179,7 @@ const MyOrderPage = () => {
                                         <div style={{ display: 'flex', gap: '10px' }}>
                                             {
                                                 (!order?.isCancel) ? (<ButtonComponent
-                                                    onClick={() => handleCanceOrder(order)}
+                                                    onClick={() => handleCancelOrder(order)}
                                                     size={40}
                                                     styleButton={{
                                                         height: '36px',
@@ -155,13 +206,26 @@ const MyOrderPage = () => {
                                         </div>
                                     </WrapperFooterItem>
                                 </WrapperItemOrder>
-                            )
+                            );
                         })}
                     </WrapperListOrder>
                 </div>
             </WrapperContainer>
-        </Loading >
-    )
-}
+            <Modal
+                title="Lý do hủy đơn hàng"
+                visible={isModalVisible}
+                onOk={handleConfirmCancel}
+                onCancel={() => setIsModalVisible(false)}
+            >
+                <Input.TextArea
+                    value={cancelReason}
+                    onChange={(e) => setCancelReason(e.target.value)}
+                    placeholder="Nhập lý do hủy đơn hàng"
+                    rows={4}
+                />
+            </Modal>
+        </Loading>
+    );
+};
 
-export default MyOrderPage
+export default MyOrderPage;

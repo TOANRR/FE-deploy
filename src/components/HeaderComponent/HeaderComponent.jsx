@@ -13,7 +13,8 @@ import {
   PoweroffOutlined,
   DashboardOutlined,
   SettingOutlined,
-  EditOutlined
+  EditOutlined,
+  KeyOutlined
 } from '@ant-design/icons';
 import ButttonInputSearch from '../ButtonInputSearch/ButtonInputSearch';
 import { useNavigate } from 'react-router-dom';
@@ -50,54 +51,7 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
     navigate('/search-image')
   ]
 
-  // const searchImageSubmit = async () => {
-  //   try {
-
-  //     const res = await axios.get(`https://api-python-image-mmsqt5gz7-toanrrs-projects.vercel.app/`, {
-  //       query_img: img
-  //     }
-
-  //     )
-  //     console.log("res", res)
-  //     if (res?.data?.status === "OK") {
-  //       setProductImgs(res.data.data)
-  //       console.log("productImgs", res.data.data)
-  //       setIsImage(true)
-  //       dispatch(searchProduct({ search: search, isImage: true, productImgs: res.data.data }))
-  //     }
-
-
-
-  //     // const res = await axios.get(`http://127.0.0.1:5001`)
-
-  //   }
-  //   catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
-  // const handleChooseImg = (e) => {
-  //   const files = e.target.files;
-  //   if (files) {
-  //     const file = files[0];
-  //     if (!file) return;
-  //     if (file.type.indexOf("image/") === -1) {
-  //       alert("dinh dang file khong hop le");
-  //       return;
-  //     }
-
-  //     const reader = new FileReader();
-  //     reader.onload = () => {
-  //       const result = reader.result;
-  //       setImg(result);
-  //     };
-  //     reader.readAsDataURL(files[0]);
-
-  //     setFileImg(file);
-
-  //     console.log("img", img)
-  //   }
-  // };
+  
 
   const handleSearch = () => {
     setIsImage(false)
@@ -128,6 +82,8 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
   const content = (
     <div>
       <WrapperContentPopup onClick={() => handleClickNavigate('profile')}><EditOutlined style={{ fontSize: '14px', marginRight: "5px" }} />Thông tin người dùng</WrapperContentPopup>
+      <WrapperContentPopup onClick={() => handleClickNavigate('change-password')}><KeyOutlined style={{ fontSize: '14px', marginRight: "5px" }} />Đổi mật khẩu</WrapperContentPopup>
+
       {user?.isAdmin && (
 
         <WrapperContentPopup onClick={() => handleClickNavigate('admin')}> <SettingOutlined style={{ fontSize: '14px', marginRight: "5px" }} />Quản lí hệ thống</WrapperContentPopup>
@@ -143,6 +99,9 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
   const handleClickNavigate = (type) => {
     if (type === 'profile') {
       navigate('/profile-user')
+    }
+    else if (type === 'change-password') {
+      navigate('/change-password')
     } else if (type === 'admin') {
       navigate('/system/admin')
     } else if (type === 'my-order') {
