@@ -1,4 +1,4 @@
-import { Button, Col, Form, Image, List, Menu, Modal, Pagination, Rate, Row } from 'antd'
+import { Breadcrumb, Button, Col, Form, Image, List, Menu, Modal, Pagination, Rate, Row } from 'antd'
 import React, { useEffect } from 'react'
 import imageProductSmall from '../../assets/images/imagesmall.webp'
 import { WrapperStyleImageSmall, WrapperStyleColImage, WrapperStyleNameProduct, WrapperStyleTextSell, WrapperPriceProduct, WrapperPriceTextProduct, WrapperAddressProduct, WrapperQualityProduct, WrapperInputNumber, WrapperBtnQualityProduct, WrapperStyleImage, WrapperStyleCount, WrapperStyleSize, StyledPriceWrapper, PriceContainer, Price, DiscountPrice, Currency } from './style'
@@ -242,6 +242,30 @@ const ProductDetailsComponent = ({ idProduct }) => {
 
     return (
         <Loading isLoading={isLoading}>
+            <Breadcrumb
+                items={[
+                    {
+                        title: <a href="/">Trang chủ</a>,
+                    },
+                    {
+                        title: (
+                            <a href={`/type/${productDetails?.product.type}`}>
+                                {productDetails?.product.type === 'women'
+                                    ? 'Thời trang cho nữ'
+                                    : productDetails?.product.type === 'men'
+                                        ? 'Thời trang cho nam'
+                                        : productDetails?.product.type === 'kids'
+                                            ? 'Thời trang cho bé'
+                                            : productDetails?.product.type?.toUpperCase()}
+                            </a>
+                        ),
+                    },
+                    {
+                        title: <a href={`/category/${encodeURIComponent(productDetails?.product.category)}?type=${productDetails?.product.type}`}>{productDetails?.product.category}</a>,
+                    },
+                ]}
+                style={{ fontSize: "18px", fontWeight: "500" }}
+            />
             <Row style={{ boxShadow: '0 2px 4px rgba(0,0,0,0.7)', padding: '16px', background: '#fff', borderRadius: '4px', marginTop: "30px" }}>
                 <Col span={10} style={{ borderRight: '1px solid #e5e5e5', paddingRight: '8px' }}>
                     <WrapperStyleImage src={selectImage} alt="image product" />

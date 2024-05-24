@@ -1,6 +1,6 @@
 import React from 'react'
 import { Badge, Col, Popover } from 'antd'
-import { WrapperHeader, WrapperHeaderAccout, WrapperTextHeader, WrapperTextHeaderSmall, WrapperContentPopup, SearchLabelImage } from './style'
+import { WrapperHeader, WrapperHeaderAccout, WrapperTextHeader, WrapperTextHeaderSmall, WrapperContentPopup, SearchLabelImage, UserNameDiv, ResponsiveUserIcon } from './style'
 import { searchProduct } from '../../redux/slides/productSlide';
 import { CameraOutlined } from '@ant-design/icons'
 // import Search  from 'antd/es/input/Search';
@@ -51,12 +51,24 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
     navigate('/search-image')
   ]
 
-  
+
 
   const handleSearch = () => {
-    setIsImage(false)
-    setProductImgs([])
-    dispatch(searchProduct({ search: search, isImage: isImage, productImgs: productImgs }))
+    // setIsImage(false)
+    // setProductImgs([])
+    // dispatch(searchProduct({ search: search, isImage: isImage, productImgs: productImgs }))
+    if (search) {
+      if (window.location.pathname === '/search') {
+        navigate(`/search?key=${encodeURIComponent(search)}`);
+        window.location.reload();
+      }
+      else {
+        navigate(`/search?key=${encodeURIComponent(search)}`);
+
+      }
+    }
+
+
   }
   const handleNavigateLogin = () => {
     navigate('/sign-in')
@@ -116,14 +128,19 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
     }
     setIsOpenPopup(false)
   }
-
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      // Xử lý logic khi nhấn phím Enter ở đây
+      handleSearch()
+    }
+  };
 
   return (
     <div style={{ height: '60px', width: '100%', display: 'flex', background: '#ffff', justifyContent: 'center' }}>
       <WrapperHeader style={{ justifyContent: isHiddenSearch && isHiddenSearch ? 'space-between' : 'unset', width: '100%' }}>
-        <Col span={6}>
+        <Col span={5}>
           {/* // <WrapperTextHeader onClick={() => navigate('/')} style={{ cursor: "pointer", paddingLeft: "25px" }}><img src='/src/assets/images/logo.png'></img></WrapperTextHeader> */}
-          <img src={logo} alt="logo" width="120" height="35" onClick={() => navigate('/')} style={{ cursor: "pointer", paddingLeft: "25px" }}></img>
+          <img src={logo} alt="logo" width="35%" height="35" onClick={() => navigate('/')} style={{ cursor: "pointer", paddingLeft: "25px" }}></img>
         </Col>
         {!isHiddenSearch && (
           <Col span={12}>
@@ -137,6 +154,7 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
                 position="absolute"
                 z-index="2"
                 onChange={onChangeInput}
+                onKeyPress={handleKeyPress}
               />
 
               {/* <UploadImageComponent /> */}
@@ -164,7 +182,7 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
           </Col>
         )}
 
-        <Col span={6} style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+        <Col span={6} style={{ display: 'flex', gap: '2%', alignItems: 'center' }}>
           <Loading isLoading={loading}>
             <WrapperHeaderAccout>
               {userAvatar ? (
@@ -175,20 +193,12 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
                   objectFit: 'cover'
                 }} />
               ) : (
-                <UserOutlined style={{ fontSize: '25px' }} />
+                <ResponsiveUserIcon />
               )}
               {user?.access_token ? (
                 <>
                   <Popover content={content} trigger="click" open={isOpenPopup}>
-                    <div style={{
-                      cursor: 'pointer', width: 100,
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                      textDecoration: 'none', // Loại bỏ gạch chân mặc định của thẻ <a>
-                      color: 'inherit', // Sử dụng màu chữ mặc định của thẻ <a>
-                      display: 'block',
-                    }} onClick={() => setIsOpenPopup((prev) => !prev)}>{userName?.length ? userName : user?.email}</div>
+                    <UserNameDiv onClick={() => setIsOpenPopup((prev) => !prev)}>{userName?.length ? userName : user?.email}</UserNameDiv>
                   </Popover>
                 </>
               ) : (

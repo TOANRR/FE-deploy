@@ -419,7 +419,7 @@ const AdminProduct = () => {
   const ImageCell = ({ images }) => (
     <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
       {images.map((image, index) => (
-        <img key={index} src={image} alt={`Ảnh ${index}`} style={{ width: 'auto', height: '40px' }} />
+        <img key={index} src={image} alt={`Ảnh ${index}`} style={{ width: 'auto', height: '70px' }} />
       ))}
     </div>
   );
@@ -942,7 +942,7 @@ const AdminProduct = () => {
                   <Loading isLoading={loadImage}>
                     <div onClick={handleClick} style={{ cursor: "pointer" }} name="images">
                       {stateProduct.images[0] ? (
-                        <img src={stateProduct.images[0]} alt="upload image" className="img-after" height="40" width="30" />
+                        <img src={stateProduct.images[0]} alt="upload image" className="img-after-up" />
                       ) : (
                         <img src="https://t4.ftcdn.net/jpg/04/81/13/43/360_F_481134373_0W4kg2yKeBRHNEklk4F9UXtGHdub3tYk.jpg" className="img-before" />
                       )}
@@ -950,19 +950,19 @@ const AdminProduct = () => {
 
 
                       {stateProduct.images[1] ? (
-                        <img src={stateProduct.images[1]} alt="upload image" className="img-after" height="40" width="30" />
+                        <img src={stateProduct.images[1]} alt="upload image" className="img-after-up" />
                       ) : (
                         <img src="https://t4.ftcdn.net/jpg/04/81/13/43/360_F_481134373_0W4kg2yKeBRHNEklk4F9UXtGHdub3tYk.jpg" className="img-before" />
                       )}
 
                       {stateProduct.images[2] ? (
-                        <img src={stateProduct.images[2]} alt="upload image" className="img-after" height="40" width="30" />
+                        <img src={stateProduct.images[2]} alt="upload image" className="img-after-up" />
                       ) : (
                         <img src="https://t4.ftcdn.net/jpg/04/81/13/43/360_F_481134373_0W4kg2yKeBRHNEklk4F9UXtGHdub3tYk.jpg" className="img-before" />
                       )}
 
                       {stateProduct.images[3] ? (
-                        <img src={stateProduct.images[3]} alt="upload image" className="img-after" height="40" width="30" />
+                        <img src={stateProduct.images[3]} alt="upload image" className="img-after-up" />
                       ) : (
                         <img src="https://t4.ftcdn.net/jpg/04/81/13/43/360_F_481134373_0W4kg2yKeBRHNEklk4F9UXtGHdub3tYk.jpg" className="img-before" />
                       )}
@@ -1134,7 +1134,7 @@ const AdminProduct = () => {
                   <Loading isLoading={loadImageDetail}>
                     <div onClick={handleClickDetail} style={{ cursor: "pointer" }} name="images">
                       {stateProductDetails.images[0] ? (
-                        <img src={stateProductDetails.images[0]} alt="upload image" className="img-after" height="40" width="30" />
+                        <img src={stateProductDetails.images[0]} alt="upload image" className="img-after" height="40" width='auto' />
                       ) : (
                         <img src="https://t4.ftcdn.net/jpg/04/81/13/43/360_F_481134373_0W4kg2yKeBRHNEklk4F9UXtGHdub3tYk.jpg" className="img-before" />
                       )}
@@ -1142,19 +1142,19 @@ const AdminProduct = () => {
 
 
                       {stateProductDetails.images[1] ? (
-                        <img src={stateProductDetails.images[1]} alt="upload image" className="img-after" height="40" width="30" />
+                        <img src={stateProductDetails.images[1]} alt="upload image" className="img-after" height="40" width='auto' />
                       ) : (
                         <img src="https://t4.ftcdn.net/jpg/04/81/13/43/360_F_481134373_0W4kg2yKeBRHNEklk4F9UXtGHdub3tYk.jpg" className="img-before" />
                       )}
 
                       {stateProductDetails.images[2] ? (
-                        <img src={stateProductDetails.images[2]} alt="upload image" className="img-after" height="40" width="30" />
+                        <img src={stateProductDetails.images[2]} alt="upload image" className="img-after" height="40" width='auto' />
                       ) : (
                         <img src="https://t4.ftcdn.net/jpg/04/81/13/43/360_F_481134373_0W4kg2yKeBRHNEklk4F9UXtGHdub3tYk.jpg" className="img-before" />
                       )}
 
                       {stateProductDetails.images[3] ? (
-                        <img src={stateProductDetails.images[3]} alt="upload image" className="img-after" height="40" width="30" />
+                        <img src={stateProductDetails.images[3]} alt="upload image" className="img-after" height="40" width='auto' />
                       ) : (
                         <img src="https://t4.ftcdn.net/jpg/04/81/13/43/360_F_481134373_0W4kg2yKeBRHNEklk4F9UXtGHdub3tYk.jpg" className="img-before" />
                       )}

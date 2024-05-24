@@ -6,7 +6,7 @@ import { DeleteOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons'
 import { WrapperInputNumber } from '../../components/ProductDetailComponent/style';
 import ButtonComponent from '../../components/ButtonComponent/ButtonComponent';
 import { useDispatch, useSelector } from 'react-redux';
-import { addOrderProduct, decreaseAmount, increaseAmount, removeAllOrderProduct, removeOrderProduct, resetOrder, selectedOrder } from '../../redux/slides/orderSlide';
+import { addOrderProduct, decreaseAmount, increaseAmount, removeAllOrderProduct, removeOrderProduct, resetOrder, selectedOrder, setAmount } from '../../redux/slides/orderSlide';
 import { convertPrice } from '../../utils';
 import { useMemo } from 'react';
 import ModalComponent from '../../components/ModalComponent/ModalComponent';
@@ -178,7 +178,7 @@ const OrderPage = () => {
           size: size
         }, user?.access_token)
         console.log(res)
-        if (res.status === "OK") { dispatch(increaseAmount({ idProduct, size })) }
+        if (res.status === "OK") { console.log("+1"); dispatch(setAmount({ idProduct, size, amount: res.data.quantity })) }
 
         else
           message.error("số lượng không đủ")
@@ -197,7 +197,8 @@ const OrderPage = () => {
             user: user?.id,
             size: size
           }, user?.access_token)
-          if (res.status === "OK") { dispatch(decreaseAmount({ idProduct, size })) }
+          console.log(res)
+          if (res.status === "OK") { console.log("-1"); dispatch(setAmount({ idProduct, size, amount: res.data.quantity })) }
           else
             message.error("Vui lòng chọn số lượng lớn hơn 0")
         }
@@ -370,7 +371,7 @@ const OrderPage = () => {
             title: <a href="/">Trang chủ</a>,
           },
           {
-            title: <a href="">Giỏ hàng</a>,
+            title: <a href="#">Giỏ hàng</a>,
           }
         ]}
         style={{ marginBottom: "25px", paddingTop: "30px", fontSize: "18px", paddingLeft: "3%", fontWeight: "500" }}

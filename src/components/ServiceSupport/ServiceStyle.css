@@ -1,6 +1,6 @@
 .services_wrapper {
     margin-top: 100px;
-    display: flex;
+    display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
     place-items: center;
@@ -10,21 +10,43 @@
     font-size: 20px;
     font-weight: 1000;
 
-    @media (min-width: 992px) {
+    @media (max-width: 992px) {
         grid-template-columns: repeat(2, 1fr);
         gap: 3rem;
     }
 
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
     @media (max-width: 576px) {
         grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 2rem 1rem;
+        font-size: 16px;
     }
 }
 
 .services_card {
     display: flex;
-    justify-content: flex-start;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    gap: 50px;
+    gap: 20px;
+    padding: 1rem;
+    text-align: center;
+
+    @media (max-width: 768px) {
+        flex-direction: row;
+        justify-content: flex-start;
+        text-align: left;
+    }
+
+    @media (max-width: 576px) {
+        flex-direction: column;
+        text-align: center;
+    }
 }
 
 .services_icon {
@@ -32,12 +54,20 @@
     opacity: 0.9;
     font-size: 2.2rem;
     line-height: 1;
+
+    @media (max-width: 576px) {
+        font-size: 1.8rem;
+    }
 }
 
 .services_details p {
     font-size: 0.875rem;
     margin-top: 0.4rem;
     opacity: 0.8;
+
+    @media (max-width: 576px) {
+        font-size: 0.75rem;
+    }
 }
 
 h2 {
@@ -45,4 +75,10 @@ h2 {
     justify-content: center;
     margin-top: 50px;
     margin-bottom: -20px;
+
+    @media (max-width: 576px) {
+        font-size: 1.5rem;
+        margin-top: 30px;
+        margin-bottom: -10px;
+    }
 }

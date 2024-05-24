@@ -161,11 +161,10 @@ const HomePage = () => {
           <div style={{ width: '100%', height: "70px", margin: '0 auto', backgroundColor: '#000000', marginBottom: "30px", marginTop: "40px" }}>
             <WrapperTypeFeatured>FEATURED PRODUCTS</WrapperTypeFeatured>
           </div>
-          <div id="container" style={{ height: '100%', width: '1050px', margin: '0 auto' }}>
-
-            <WrapperProducts>
-              {products?.data?.map((product) => {
-                return (
+          <div id="container" style={{ height: '100%', width: '78%', margin: '0 auto' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <WrapperProducts>
+                {products?.data?.map((product) => (
                   <CardComponent
                     key={product._id}
                     countInStock={sumArray(product.sizes)}
@@ -179,25 +178,35 @@ const HomePage = () => {
                     discount={product.discount}
                     id={product._id}
                   />
-                )
-              })}
-            </WrapperProducts>
+                ))}
+              </WrapperProducts>
 
-
-            <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-              {
-                !(products?.total === products?.data?.length || products?.totalPage === 1) && <WrapperButtonMore
-                  textbutton={isPreviousData ? 'Load more' : "Xem thêm"} type="outline" styleButton={{
-                    border: '1px solid #000000', color: `${products?.total === products?.data?.length ? '#ccc' : '#000000'}`,
-                    width: '240px', height: '38px', borderRadius: '4px'
-                  }}
-                  styleTextButton={{ fontWeight: 500, color: products?.total === products?.data?.length && '#fff' }}
-                  onClick={() => setLimit((prev) => prev + 4)}
-                />
-              }
+              <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+                {!(
+                  products?.total === products?.data?.length || products?.totalPage === 1
+                ) && (
+                    <WrapperButtonMore
+                      textbutton={isPreviousData ? 'Load more' : 'Xem thêm'}
+                      type="outline"
+                      styleButton={{
+                        border: '1px solid #000000',
+                        color: `${products?.total === products?.data?.length ? '#ccc' : '#000000'
+                          }`,
+                        width: '240px',
+                        height: '38px',
+                        borderRadius: '4px',
+                      }}
+                      styleTextButton={{
+                        fontWeight: 500,
+                        color: products?.total === products?.data?.length && '#fff',
+                      }}
+                      onClick={() => setLimit((prev) => prev + 4)}
+                    />
+                  )}
+              </div>
             </div>
+          </div>;
 
-          </div>
           <div style={{
             backgroundColor: '#ffffff',
             borderRadius: '4px',

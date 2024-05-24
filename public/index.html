@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"
     integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ=="
     crossorigin="" />
+  <link href="https://unpkg.com/react-image-crop/dist/ReactCrop.css" rel="stylesheet" />
 
 
 
@@ -32,8 +33,28 @@
   <style>
     /* CSS code goes here */
     df-messenger {
-      width: 100px;
-      height: 200px;
+      --df-messenger-bot-message: #000;
+      /* Màu nền của các tin nhắn từ agent */
+      --df-messenger-button-titlebar-color: #000000;
+      /* Màu của nút float và thanh tiêu đề của hộp chat */
+      --df-messenger-button-titlebar-font-color: #fff;
+      /* Màu của chữ trong thanh tiêu đề của hộp chat */
+      --df-messenger-chat-background-color: #fff;
+      /* Màu nền của hộp chat */
+      --df-messenger-font-color: #fff;
+      /* Màu của chữ trong tin nhắn */
+      --df-messenger-input-box-color: #fff;
+      /* Màu nền của ô nhập tin nhắn */
+      --df-messenger-input-font-color: #000;
+      /* Màu của chữ trong ô nhập tin nhắn */
+      --df-messenger-input-placeholder-font-color: #999999;
+      /* Màu của chữ gợi ý trong ô nhập tin nhắn */
+      --df-messenger-minimized-chat-close-icon-color: #ffffff;
+      /* Màu của biểu tượng đóng hộp chat thu nhỏ */
+      --df-messenger-send-icon: #000;
+      /* Màu của biểu tượng gửi trong ô nhập tin nhắn */
+      --df-messenger-user-message: #000;
+      /* Màu nền của các tin nhắn từ người dùng */
     }
 
     body {
@@ -62,13 +83,30 @@
   <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"
     integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log=="
     crossorigin=""></script>
+  <script src="https://unpkg.com/react-image-crop/dist/index.umd.cjs"></script>
+
   <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
-  <df-messenger intent="WELCOME" chat-title="fashion" agent-id="e7f8ffc8-4612-4cab-914d-8d81f3b0ba0a"
-    language-code="vi"></df-messenger>
-  <!-- <script async defer crossorigin="anonymous"
-    src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v19.0&appId=1112293383358231"
-    nonce="qwSPswAc"></script> -->
-  <!-- <script src="https://unpkg.com/react-image-crop/dist/index.umd.cjs"></script> -->
+
+  <script>
+    $(document).ready(function () {
+      window.addEventListener('dfMessengerLoaded', function (event) {
+        const dfMessenger = document.querySelector("df-messenger");
+        if (dfMessenger) {
+          const chatElement = dfMessenger.shadowRoot.querySelector("df-messenger-chat");
+          if (chatElement) {
+            const sheet = new CSSStyleSheet();
+            // Thiết lập kích thước của hộp chat
+            sheet.replaceSync(`div.chat-wrapper[opened="true"] { height: 450px; width: 300px; }`);
+            chatElement.shadowRoot.adoptedStyleSheets = [sheet];
+          }
+
+        }
+      });
+    });
+
+  </script>
+
+
 
 
 

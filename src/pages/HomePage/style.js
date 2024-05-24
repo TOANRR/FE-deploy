@@ -68,8 +68,9 @@ export const WrapperProducts = styled.div`
     display: flex;
     gap: 14px;
     margin-top: 20px;
-    padding-left: 50px
-    flex-wrap: wrap;
+    // // justify-content: center; /* Căn giữa theo chiều ngang */
+    // align-items: center; /* Căn giữa theo chiều dọc */
+    // flex-wrap: wrap;
 `
 export const Nav = styled.nav`
   ul {

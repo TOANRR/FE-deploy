@@ -10,6 +10,7 @@ body {
   min-width: 400px;
   font-family: "Noto Sans", sans-serif;
   font-optical-sizing: auto;
+  /* zoom: 90%; */
 }
 
 

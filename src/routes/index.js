@@ -21,6 +21,9 @@ import OrderSuccessVnpay from "../pages/OrderSuccessVnpay/OrderSuccessVnpay";
 import AboutUsPage from "../pages/AboutUsPage/AboutUsPage";
 import LoginSuccess from "../pages/LoginSuccessPage/LoginSuccessPage";
 import ChangePassword from "../pages/ChangePasswordPage/ChangePasswordPage"
+import SearchPage from "../pages/SearchProductPage/SearchProductPage"
+import TypePage from "../pages/TypePage/TypePage"
+import CategoryPage from "../pages/CategoryPage/CategoryPage";
 export const routes = [
     {
         path: '/',
@@ -134,6 +137,21 @@ export const routes = [
     {
         path: '/search-image',
         page: SearchImage,
+        isShowHeader: true
+    },
+    {
+        path: '/search',
+        page: SearchPage,
+        isShowHeader: true
+    },
+    {
+        path: '/type/:id',
+        page: TypePage,
+        isShowHeader: true
+    },
+    {
+        path: '/category/:id',
+        page: CategoryPage,
         isShowHeader: true
     },
     {
