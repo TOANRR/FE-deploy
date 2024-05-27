@@ -96,7 +96,7 @@ const Footer = () => {
                         <div className="foot_copyright">
                             <p>
                                 {currYear} | TKLFashion. All Rights Reserved.
-                                Built by | <a href="https://gulshansongara.netlify.app/">Trịnh Khánh Ly</a>
+                                Built by | <a href="/">Trịnh Khánh Ly</a>
                             </p>
                         </div>
                         <div className="foot_social">
