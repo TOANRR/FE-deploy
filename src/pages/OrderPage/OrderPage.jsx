@@ -364,7 +364,7 @@ const OrderPage = () => {
     },
   ]
   return (
-    <div style={{ background: '#f5f5fa', with: '100%', maxHeight: '2400vh' }}>
+    <div style={{ background: 'rgb(240, 240, 240)', with: '100%', minHeight: '100vh', paddingBottom: "30px" }}>
       <Breadcrumb
         items={[
           {
@@ -485,9 +485,11 @@ const OrderPage = () => {
               styleButton={{
                 background: '#000000',
                 height: '48px',
-                width: '320px',
+                width: '330px',
                 border: 'none',
-                borderRadius: '4px'
+                borderRadius: '4px',
+                marginLeft: "6px"
+
               }}
               textbutton={'Mua hàng'}
               styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}

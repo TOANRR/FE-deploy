@@ -24,6 +24,8 @@ import ChangePassword from "../pages/ChangePasswordPage/ChangePasswordPage"
 import SearchPage from "../pages/SearchProductPage/SearchProductPage"
 import TypePage from "../pages/TypePage/TypePage"
 import CategoryPage from "../pages/CategoryPage/CategoryPage";
+import ForgotPasswordPage from "../pages/ForgotPasswordPage/ForgotPasswordPage";
+import ResetPasswordPage from "../pages/ResetPasswordPage/ResetPasswordPage";
 export const routes = [
     {
         path: '/',
@@ -85,6 +87,16 @@ export const routes = [
     {
         path: '/sign-up',
         page: SignUpPage,
+        isShowHeader: false
+    },
+    {
+        path: '/forgot-password',
+        page: ForgotPasswordPage,
+        isShowHeader: false
+    },
+    {
+        path: '/reset-password/:token',
+        page: ResetPasswordPage,
         isShowHeader: false
     },
     {

@@ -45,11 +45,11 @@ const HomePage = () => {
   const fetchProductsType = async (type) => {
     return await ProductService.getProductByType(type);
   };
-  const que = useQuery({ queryKey: ['products-wo'], queryFn: () => fetchProductsType('women') })
+  const que = useQuery({ queryKey: ['products-wo'], queryFn: () => fetchProductsType('women'), retry: 3 })
   const { data: productsWomen, isLoading: womenLoad } = que
-  console.log(que)
-  const { data: productsMen, isLoading: menLoad } = useQuery({ queryKey: ['products-men'], queryFn: () => fetchProductsType('men') })
-  const { data: productsKids, isLoading: kidLoad } = useQuery({ queryKey: ['products-kid'], queryFn: () => fetchProductsType('kids') })
+  // console.log(que)
+  const { data: productsMen, isLoading: menLoad } = useQuery({ queryKey: ['products-men'], queryFn: () => fetchProductsType('men'), retry: 3 })
+  const { data: productsKids, isLoading: kidLoad } = useQuery({ queryKey: ['products-kid'], queryFn: () => fetchProductsType('kids'), retry: 3 })
   const fetchProductAll = async (context) => {
     // console.log('context', context)
     const limit = context?.queryKey && context?.queryKey[1]

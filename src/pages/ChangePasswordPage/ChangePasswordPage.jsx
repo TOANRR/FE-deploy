@@ -37,7 +37,8 @@ const PasswordChange = () => {
     };
 
     return (
-        <div style={{ maxWidth: '400px', margin: 'auto', padding: '20px', marginTop: "50px", border: '1px solid #f0f0f0', borderRadius: '4px', fontWeight: "600" }}>
+
+        <div style={{ maxWidth: '400px', margin: 'auto', padding: '20px', marginTop: "50px", border: '3px solid #f0f0f0', borderRadius: '4px', fontWeight: "600" }}>
             <h1 style={{ textAlign: 'center', marginBottom: "50px" }}>Đổi mật khẩu</h1>
             <Form
                 name="password_change"

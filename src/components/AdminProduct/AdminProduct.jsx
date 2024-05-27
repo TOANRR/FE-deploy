@@ -1,4 +1,4 @@
-import { Button, Col, Form, Input, Modal, Row, Select, Space, Switch } from 'antd'
+import { Button, Col, Form, Input, Modal, Row, Select, Space, Switch, Tag } from 'antd'
 import { PlusOutlined, DeleteOutlined, EditOutlined, SearchOutlined, MinusCircleOutlined } from '@ant-design/icons'
 import React, { useRef } from 'react'
 import { WrapperHeader, WrapperUploadFile } from './style'
@@ -40,7 +40,11 @@ const AdminProduct = () => {
   const hiddenFileInputDetail = useRef(null);
   const [loadImage, setLoadImage] = useState(false)
   const [loadImageDetail, setLoadImageDetail] = useState(false)
-
+  const colors = {
+    women: 'volcano', // Màu đỏ của Ant Design
+    men: 'geekblue', // Màu xanh của Ant Design
+    kids: 'gold', // Màu vàng của Ant Design
+  };
 
 
 
@@ -434,6 +438,13 @@ const AdminProduct = () => {
   );
   const [columns, setColumns] = useState([
     {
+      title: 'STT',
+      dataIndex: 'index',
+      rowScope: 'row',
+      fixed: 'left',
+      width: 60,
+    },
+    {
       key: 'name',
       title: 'Tên',
       dataIndex: 'name',
@@ -481,7 +492,9 @@ const AdminProduct = () => {
       key: 'type',
       title: 'Loại',
       dataIndex: 'type',
-      render: (text) => <span style={{ textTransform: 'uppercase' }}>{text}</span>,
+      render: (text) => (
+        <Tag color={colors[text.toLowerCase()]}>{text.toUpperCase()}</Tag>
+      ),
       width: 120,
       filters: [
         {
@@ -533,6 +546,13 @@ const AdminProduct = () => {
       render: (sizes) => <SizesCell sizes={sizes} />,
     },
     {
+      key: 'selled',
+      title: 'Đã bán',
+      dataIndex: 'selled',
+      width: 120,
+      render: (selled) => <span>{selled ? selled : 0} sản phẩm</span>,
+    },
+    {
       key: 'action',
       title: 'Action',
       dataIndex: 'action',
@@ -548,8 +568,8 @@ const AdminProduct = () => {
       )
     );
   };
-  const dataTable = products?.data?.length && products?.data?.map((product) => {
-    return { ...product, key: product._id }
+  const dataTable = products?.data?.length && products?.data?.map((product, index) => {
+    return { ...product, key: product._id, index: index + 1 }
   })
 
   useEffect(() => {
@@ -568,7 +588,7 @@ const AdminProduct = () => {
     } else if (isErrorDeleted) {
       message.error()
     }
-  }, [isSuccessDelected])
+  }, [isSuccessDelected, isErrorDeleted])
 
   useEffect(() => {
     if (isSuccessDelectedMany && dataDeletedMany?.status === 'OK') {
@@ -608,8 +628,8 @@ const AdminProduct = () => {
     if (isSuccessUpdated && dataUpdated?.status === 'OK') {
       message.success("Cập nhật thành công")
       handleCloseDrawer()
-    } else if (isErrorUpdated) {
-      message.error()
+    } else if (dataUpdated?.status === 'OK') {
+      message.error(dataUpdated?.message)
     }
   }, [isSuccessUpdated])
 

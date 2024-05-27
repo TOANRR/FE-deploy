@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { DatePicker, Button } from 'antd';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import moment from 'moment';
+import { useSelector } from 'react-redux';
 
 const RevenueChart = () => {
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const [revenueData, setRevenueData] = useState([]);
+    const user = useSelector((state) => state?.user)
 
     useEffect(() => {
         const today = moment().endOf('day'); // Lấy ngày hiện tại, cuối ngày (23:59:59)
@@ -19,7 +21,13 @@ const RevenueChart = () => {
     const fetchRevenueData = async (startDate, endDate) => {
         // Gửi yêu cầu API để lấy dữ liệu doanh thu từ startDate đến endDate
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/order/get-revenue-day?startDate=${startDate.format('YYYY-MM-DD')}&endDate=${endDate.format('YYYY-MM-DD')}`);
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/order/get-revenue-day?startDate=${startDate.format('YYYY-MM-DD')}&endDate=${endDate.format('YYYY-MM-DD')}`, {
+                method: 'GET',
+                headers: {
+                    token: `Bearer ${user?.access_token}`,
+                    // Thêm các header khác tại đây nếu cần
+                }
+            });
             const data = await response.json();
             setRevenueData(data);
         } catch (error) {

@@ -1,4 +1,4 @@
-import { Form, Radio } from 'antd'
+import { Breadcrumb, Form, Radio } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { Lable, WrapperInfo, WrapperLeft, WrapperRadio, WrapperRight, WrapperTotal } from './style';
 
@@ -355,10 +355,21 @@ const PaymentPage = () => {
     }, [])
 
     return (
-        <div style={{ background: '#f5f5fa', with: '100%', height: '100vh' }}>
+        <div style={{ background: 'rgb(240,240,240)', with: '100%', height: '100vh' }}>
+            <Breadcrumb
+                items={[
+                    {
+                        title: <a href="/">Trang chủ</a>,
+                    },
+                    {
+                        title: <a href="#">Thanh toán</a>,
+                    }
+                ]}
+                style={{ marginBottom: "25px", paddingTop: "30px", fontSize: "18px", paddingLeft: "3%", fontWeight: "500" }}
+            />
             <Loading isLoading={isLoadingAddOrder}>
-                <div style={{ height: '100%', width: '1270px', margin: '0 auto' }}>
-                    <h3>Thanh toán</h3>
+                <div style={{ height: '100%', width: '100%', margin: '0 auto' }}>
+                    {/* <h3>Thanh toán</h3> */}
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                         <WrapperLeft>
                             <WrapperInfo>
@@ -429,9 +440,10 @@ const PaymentPage = () => {
                                 styleButton={{
                                     background: '#000000',
                                     height: '48px',
-                                    width: '320px',
+                                    width: '330px',
                                     border: 'none',
-                                    borderRadius: '4px'
+                                    borderRadius: '4px',
+                                    marginLeft: "6px"
                                 }}
                                 textbutton={payment === 'vnpay' ? 'THANH TOÁN' : 'ĐẶT HÀNG'}
                                 styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}

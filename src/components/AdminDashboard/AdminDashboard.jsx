@@ -6,6 +6,8 @@ import { useSelector } from 'react-redux';
 import { convertPrice } from '../../utils';
 import RevenueChart from '../RevenueChartComponent/RevenueChartComponent';
 import UserCountChart from '../UserChartComponent/UserChartComponent';
+import TopSellingProductsTable from '../TopSelledComponent/TopSelledComponent';
+import CancellationRatioPieChart from '../CancellationRatioPieChartComponent/CancellationRatioPieChartComponent';
 
 const RectangleWrapper = styled.div`
     width: 200px;
@@ -96,12 +98,19 @@ const AdminDashboard = () => {
                 </Col>
             </Row>
             <Row>
+                <Col span={20}>
+                    <TopSellingProductsTable />
+
+                </Col>
                 <Col span={20} style={{ marginTop: "50px" }}>
                     <RevenueChart />
 
                 </Col>
                 <Col span={20} style={{ marginTop: "50px" }}>
                     <UserCountChart />
+                </Col>
+                <Col span={20} >
+                    <CancellationRatioPieChart />
                 </Col>
             </Row>
         </div>

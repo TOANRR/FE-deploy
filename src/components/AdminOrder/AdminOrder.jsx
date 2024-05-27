@@ -1,4 +1,4 @@
-import { Button, Col, DatePicker, Form, Input, Row, Select, Space, Switch, Table } from 'antd'
+import { Button, Col, DatePicker, Form, Input, Row, Select, Space, Switch, Table, Tag } from 'antd'
 import React from 'react'
 import { WrapperHeader, WrapperUploadFile } from './style'
 import TableComponent from '../TableComponent/TableComponent'
@@ -16,9 +16,14 @@ import { useMutationHooks } from '../../hooks/useMutationHook'
 import * as OrderServices from '../../services/OrderService'
 import * as UserService from '../../services/UserService'
 import moment from 'moment';
-
+// import "./styleOrder.css"
 import { MutationCache, useQuery } from '@tanstack/react-query'
 import { DeleteOutlined, EditOutlined, SearchOutlined, CloseCircleOutlined } from '@ant-design/icons'
+import TableOrderComponent from '../TableOrderComponent/TableOrderComponent'
+import axios from 'axios';
+import { Typography } from 'antd';
+
+const { Text } = Typography;
 const { Option } = Select;
 const initialOrderState = {
     orderItems: [],
@@ -60,9 +65,78 @@ const AdminOrder = () => {
     const [end, setEnd] = useState('');
     const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
     const [cancelReason, setCancelReason] = useState('');
-
+    const [cities, setCities] = useState([]);
+    const [districts, setDistricts] = useState([]);
+    const [wards, setWards] = useState([]);
+    const [city, setCity] = useState('')
+    const [district, setDistrict] = useState('');
+    const [ward, setWard] = useState('');
     const [form] = Form.useForm();
+    const handleCityChange = (value) => {
+        if (value) {
+            const selectedCity = cities.find((city) => city.Id === value);
+            setDistricts(selectedCity.Districts);
+            setCity(selectedCity.Name)
+            setStateOrderDetails((prevState) => ({
+                ...prevState,
+                shippingAddress: {
+                    ...prevState.shippingAddress,
+                    city: selectedCity.Name
+                }
+            }));
+            setWards([]);
+            setDistrict('')
+            setWard('')
+        } else {
+            setDistricts([]);
+            setWards([]);
+        }
+    };
+    useEffect(() => {
+        if (stateOrderDetails.shippingAddress?.city && (districts.length === 0)) {
+            const selectedC = cities.find((city) => city.Name === stateOrderDetails.shippingAddress?.city)
+            setDistricts(selectedC?.Districts || []);
+        }
+    }, [stateOrderDetails.shippingAddress?.city, cities]); // Gọi lại khi user.city hoặc cities thay đổi
 
+    useEffect(() => {
+        if (stateOrderDetails.shippingAddress?.district && (wards.length === 0)) {
+            const selectedD = districts.find((district) => district.Name === stateOrderDetails.shippingAddress?.district)
+            setWards(selectedD?.Wards || []);
+        }
+    }, [stateOrderDetails.shippingAddress?.district, districts]); // Gọi lại k
+
+    const handleDistrictChange = (value) => {
+        if (value) {
+            const selectedDistrict = districts.find((district) => district.Id === value);
+            setWards(selectedDistrict.Wards);
+            setDistrict(selectedDistrict.Name)
+            setStateOrderDetails((prevState) => ({
+                ...prevState,
+                shippingAddress: {
+                    ...prevState.shippingAddress,
+                    district: selectedDistrict.Name
+                }
+            }));
+            setWard('')
+        } else {
+            setWards([]);
+        }
+    };
+    const handleWardChange = (value) => {
+        if (value) {
+            const selectedWard = wards.find((ward) => ward.Id === value);
+            setWard(selectedWard.Name)
+            setStateOrderDetails((prevState) => ({
+                ...prevState,
+                shippingAddress: {
+                    ...prevState.shippingAddress,
+                    ward: selectedWard.Name
+                }
+            }));
+            console.log(city, district, ward)
+        }
+    };
     const mutationUpdate = useMutationHooks(
         (data) => {
             const { id,
@@ -129,7 +203,12 @@ const AdminOrder = () => {
         const res = await OrderServices.getDetailsOrder(rowSelected, user?.access_token)
         if (res?.data) {
             setStateOrderDetails(res.data);
+            setCity(res?.data?.shippingAddress.city)
+            setDistrict(res?.data?.shippingAddress.district)
+            setWard(res?.data?.shippingAddress.ward)
         }
+        const response = await axios.get('https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json');
+        setCities(response.data);
         setIsLoadingUpdate(false)
     }
 
@@ -156,12 +235,13 @@ const AdminOrder = () => {
     const [dataTable, setTable] = useState()
     useEffect(() => {
         if (orders?.data) {
-            setTable(orders.data.map((order) => {
+            setTable(orders.data.map((order, index) => {
                 return {
                     ...order,
                     key: order._id,
                     fullname: order.shippingAddress.fullName,
-                    address: order.shippingAddress.address + ', ' + order.shippingAddress.city + ', ' + order.shippingAddress.district + ', ' + order.shippingAddress.ward + ', sđt: ' + order.shippingAddress.phone
+                    address: order.shippingAddress.address + ', ' + order.shippingAddress.city + ', ' + order.shippingAddress.district + ', ' + order.shippingAddress.ward + ', sđt: ' + order.shippingAddress.phone,
+                    index: index + 1
                 };
             }));
         }
@@ -255,6 +335,13 @@ const AdminOrder = () => {
     });
 
     const [columns, setColumns] = useState([
+        {
+            title: 'STT',
+            dataIndex: 'index',
+            rowScope: 'row',
+            fixed: 'left',
+            width: 60,
+        },
 
         {
             title: 'Người dùng',
@@ -289,21 +376,25 @@ const AdminOrder = () => {
             width: 150,
             key: 'paymentMethod',
             render: (paymentMethod) => {
+                let color = '';
                 let text = '';
                 switch (paymentMethod) {
                     case 'vnpay':
-                        text = 'vnpay';
+                        color = 'yellow'; // Màu đỏ của Ant Design
+                        text = 'VNPAY';
                         break;
                     case 'later_money':
+                        color = 'geekblue'; // Màu xanh của Ant Design
                         text = 'Trả sau';
                         break;
                     case 'paypal':
+                        color = 'green'; // Màu xanh lá cây của Ant Design
                         text = 'Paypal';
                         break;
                     default:
                         break;
                 }
-                return text;
+                return <Tag color={color}>{text}</Tag>;
             },
             filters: [
                 {
@@ -335,7 +426,11 @@ const AdminOrder = () => {
             dataIndex: 'isPaid',
             key: 'status',
             width: 150,
-            render: (isPaid) => (isPaid ? 'Đã thanh toán' : 'Chưa thanh toán'),
+            render: (isPaid) => (
+                <Tag color={isPaid ? 'green' : 'red'}>
+                    {isPaid ? 'Đã thanh toán' : 'Chưa thanh toán'}
+                </Tag>
+            ),
             filters: [
                 {
                     text: 'Đã thanh toán',
@@ -374,7 +469,11 @@ const AdminOrder = () => {
             dataIndex: 'paidAt',
             key: 'paidAt',
             width: 160,
-            render: (paidAt) => (paidAt ? new Date(paidAt).toLocaleString() : 'Not paid'),
+            render: (paidAt) => (
+                <Tag color={paidAt ? 'green' : 'red'}>
+                    {paidAt ? new Date(paidAt).toLocaleString() : 'Not paid'}
+                </Tag>
+            ),
         },
         {
             title: 'Vận chuyển',
@@ -382,21 +481,25 @@ const AdminOrder = () => {
             key: 'deliveryStatus',
             width: 150,
             render: (deliveryStatus) => {
+                let color = '';
                 let text = '';
                 switch (deliveryStatus) {
                     case 'not_delivered':
+                        color = 'red';
                         text = 'Chưa vận chuyển';
                         break;
                     case 'delivering':
+                        color = 'gold';
                         text = 'Đang vận chuyển';
                         break;
                     case 'delivered':
+                        color = 'green';
                         text = 'Đã vận chuyển';
                         break;
                     default:
                         break;
                 }
-                return text;
+                return <Tag color={color}>{text}</Tag>;
             },
             filters: [
                 {
@@ -430,7 +533,11 @@ const AdminOrder = () => {
             dataIndex: 'isCancel',
             key: 'isCancel',
             width: 150,
-            render: (isCancel) => (isCancel ? 'Đã hủy' : 'Bình thường'),
+            render: (isCancel) => {
+                const color = isCancel ? 'red' : 'blue';
+                const text = isCancel ? 'Đã hủy' : 'Bình thường';
+                return <Tag color={color}>{text}</Tag>;
+            },
             filters: [
                 {
                     text: 'Bị hủy',
@@ -484,22 +591,6 @@ const AdminOrder = () => {
         form.resetFields()
     };
 
-    // useEffect(() => {
-    //     if (isSuccessUpdated && dataUpdated?.status === 'OK') {
-    //         message.success("Cập nhật người dùng thành công")
-    //         handleCloseDrawer()
-    //     } else if (isErrorUpdated) {
-    //         message.error()
-    //     }
-    // }, [isSuccessUpdated])
-
-    // useEffect(() => {
-    //     if (isSuccessDelectedMany && dataDeletedMany?.status === 'OK') {
-    //         message.success()
-    //     } else if (isErrorDeletedMany) {
-    //         message.error()
-    //     }
-    // }, [isSuccessDelectedMany])
 
     const handleCancelDelete = () => {
         setIsModalOpenDelete(false)
@@ -533,6 +624,11 @@ const AdminOrder = () => {
             title: 'Giá',
             dataIndex: 'price',
             key: 'price',
+        },
+        {
+            title: 'Giảm',
+            dataIndex: 'discount',
+            key: 'discount',
         },
         {
             title: 'Size',
@@ -641,6 +737,16 @@ const AdminOrder = () => {
         queryOrder.refetch();
 
     }
+    const handleAddressChange = (e) => {
+        const { value } = e.target;
+        setStateOrderDetails((prevState) => ({
+            ...prevState,
+            shippingAddress: {
+                ...prevState.shippingAddress,
+                address: value,
+            },
+        }));
+    };
     return (
         <div>
             <WrapperHeader>Quản lý đơn hàng</WrapperHeader>
@@ -677,7 +783,7 @@ const AdminOrder = () => {
                         </span>
                     ))}
                 </div>
-                <TableComponent style={{ width: '1000px' }} handleDelteMany={handleDelteManyOrders} columns={columns.filter((column) => !column.hidden)} isLoading={isLoadingOrder || loadingTable} data={dataTable} scroll={{ x: 800 }} onRow={(record, rowIndex) => {
+                <TableOrderComponent style={{ width: '1000px' }} handleDelteMany={handleDelteManyOrders} columns={columns.filter((column) => !column.hidden)} isLoading={isLoadingOrder || loadingTable} data={dataTable} scroll={{ x: 800 }} onRow={(record, rowIndex) => {
                     return {
                         onClick: event => {
                             setRowSelected(record._id)
@@ -703,20 +809,79 @@ const AdminOrder = () => {
                                 <Form.Item label="Khách hàng" labelCol={{ span: 4 }}>
                                     <Input value={stateOrderDetails.shippingAddress.fullName} disabled />
                                 </Form.Item>
-                                <Form.Item label="Địa chỉ giao hàng" labelCol={{ span: 6 }}>
-                                    <Input value={stateOrderDetails.shippingAddress.address} disabled />
+                                <Form.Item
+                                    label="Địa chỉ"
+                                    name="city"
+                                    rules={[{ required: false }]}
+                                    labelCol={{ span: 4 }}
+                                >
+                                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginTop: "30px" }}>
+                                        <div style={{ marginRight: '10px', width: "100px", }}>
+                                            <Text strong >Tỉnh/thành phố</Text>
+                                        </div>
+                                        <Select
+                                            className="form-select form-select-sm mb-3"
+                                            placeholder="Chọn tỉnh thành"
+                                            onChange={handleCityChange}
+                                            value={city ? city : undefined}
+                                            style={{ width: 170 }}
+                                        >
+                                            {cities.map((city) => (
+                                                <Option key={city.Id} value={city.Id}>{city.Name}</Option>
+                                            ))}
+                                        </Select>
+                                    </div>
+                                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginTop: "10px" }}>
+                                        <div style={{ marginRight: '10px', width: "100px" }}>
+                                            <Text strong>Quận/huyện</Text>
+                                        </div>
+                                        <Select
+                                            className="form-select form-select-sm mb-3"
+                                            placeholder="Chọn quận huyện"
+                                            onChange={handleDistrictChange}
+                                            value={district ? district : undefined}
+                                            style={{ width: 170 }}
+                                        >
+                                            {districts.map((district) => (
+                                                <Option key={district.Id} value={district.Id}>{district.Name}</Option>
+                                            ))}
+                                        </Select>
+                                    </div>
+                                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginTop: "10px" }}>
+                                        <div style={{ marginRight: '10px', width: "100px" }}>
+                                            <Text strong>Xã/phường</Text>
+                                        </div>
+                                        <Select
+                                            className="form-select form-select-sm"
+                                            placeholder="Chọn xã phường"
+                                            onChange={handleWardChange}
+                                            value={ward ? ward : undefined}
+                                            style={{ width: 170 }}
+                                        >
+                                            {wards.map((ward) => (
+                                                <Option key={ward.Id} value={ward.Id}>{ward.Name}</Option>
+                                            ))}
+                                        </Select>
+                                    </div>
                                 </Form.Item>
-                                <Form.Item label="Phương thức giao hàng" labelCol={{ span: 8 }}>
-                                    <Input value={stateOrderDetails.delivery} disabled />
+
+
+                                <Form.Item label="Số nhà" labelCol={{ span: 4 }}>
+                                    <Input value={stateOrderDetails.shippingAddress.address} onChange={handleAddressChange} />
                                 </Form.Item>
+
                                 <Form.Item label="Phương thức thanh toán" labelCol={{ span: 8 }}>
                                     <Input value={stateOrderDetails.paymentMethod} disabled />
                                 </Form.Item>
-                                <Form.Item label="Tổng giá tiền" labelCol={{ span: 5 }}>
-                                    <Input value={stateOrderDetails.totalPrice} disabled />
+                                <Form.Item label="Phí vận chuyển" labelCol={{ span: 5 }}>
+                                    <Input value={convertPrice(stateOrderDetails.shippingPrice)} disabled />
                                 </Form.Item>
+
                             </Col>
                             <Col span={12}>
+                                <Form.Item label="Tổng giá tiền" labelCol={{ span: 4 }}>
+                                    <Input value={convertPrice(stateOrderDetails.totalPrice)} disabled />
+                                </Form.Item>
                                 <Form.Item label="Trạng thái thanh toán" labelCol={{ span: 7 }}>
                                     <Select value={stateOrderDetails.isPaid} disabled={stateOrderDetails.isCancel} onChange={handlePaymentStatusChange} >
                                         <Option value={false}>Chưa thanh toán</Option>
@@ -729,7 +894,10 @@ const AdminOrder = () => {
                                             format="YYYY-MM-DD HH:mm:ss" disabled />
                                     </Form.Item>
                                 )}
-                                <Form.Item label="Trạng thái đơn hàng" labelCol={{ span: 7 }}>
+                                <Form.Item label="Phương thức giao hàng" labelCol={{ span: 8 }}>
+                                    <Input value={stateOrderDetails.delivery} disabled />
+                                </Form.Item>
+                                <Form.Item label="Trạng thái giao hàng" labelCol={{ span: 7 }}>
                                     <Select value={stateOrderDetails.deliveryStatus} disabled={stateOrderDetails.isCancel} onChange={handleDeliveryStatusChange} >
                                         <Option value="not_delivered">Chưa vận chuyển</Option>
                                         <Option value="delivering">Đang vận chuyển</Option>

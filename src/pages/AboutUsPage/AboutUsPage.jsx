@@ -103,7 +103,7 @@ const AboutUsPage = () => {
     lng: 105.843219,
   };
   return (
-    <div>
+    <div style={{paddingBottom:"50px"}}>
         <Breadcrumb
                 items={[
                     {

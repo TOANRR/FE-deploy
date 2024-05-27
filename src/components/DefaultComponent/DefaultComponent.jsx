@@ -46,6 +46,7 @@ const DefaultComponent = ({ children }) => {
             colorPrimary: "#000000",
             colorInfo: "#000000"
           },
+
         }}
       >
         {children}

@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { DatePicker, Button } from 'antd';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import moment from 'moment';
+import { useSelector } from 'react-redux';
 
 const UserCountChart = () => {
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const [userData, setUserData] = useState([]);
+    const user = useSelector((state) => state?.user)
 
     useEffect(() => {
         const today = moment().endOf('day'); // Current day, end of day (23:59:59)
@@ -19,7 +21,13 @@ const UserCountChart = () => {
     const fetchUserData = async (startDate, endDate) => {
         // Fetch user count data from startDate to endDate
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/user/count-by-day?startDate=${startDate.format('YYYY-MM-DD')}&endDate=${endDate.format('YYYY-MM-DD')}`);
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/user/count-by-day?startDate=${startDate.format('YYYY-MM-DD')}&endDate=${endDate.format('YYYY-MM-DD')}`, {
+                method: 'GET',
+                headers: {
+                    token: `Bearer ${user?.access_token}`,
+                    // Thêm các header khác tại đây nếu cần
+                }
+            });
             const data = await response.json();
             setUserData(data);
         } catch (error) {

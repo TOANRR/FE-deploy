@@ -261,7 +261,7 @@ const ProfilePage = () => {
                         title: <a href="">Thông tin người dùng</a>,
                     }
                 ]}
-                style={{ fontSize: "18px", fontWeight: "500" }}
+                style={{ fontSize: "18px", fontWeight: "500", marginTop: "35px", paddingLeft: "6%" }}
 
             />
             <Loading isLoading={isPending}>
@@ -314,7 +314,7 @@ const ProfilePage = () => {
                                         placeholder="Chọn tỉnh thành"
                                         onChange={handleCityChange}
                                         value={city ? city : undefined}
-                                        style={{ width: 150 }}
+                                        style={{ width: 160 }}
 
                                     >
                                         {cities.map((city) => (
@@ -327,7 +327,7 @@ const ProfilePage = () => {
                                         placeholder=" quận/huyện"
                                         onChange={handleDistrictChange}
                                         value={district ? district : undefined}
-                                        style={{ width: 150 }}
+                                        style={{ width: 160 }}
 
                                     >
                                         {districts.map((district) => (
@@ -340,7 +340,7 @@ const ProfilePage = () => {
                                         placeholder="phường/xã"
                                         onChange={handleWardChange}
                                         value={ward ? ward : undefined}
-                                        style={{ width: 150 }}
+                                        style={{ width: 160 }}
 
 
                                     >

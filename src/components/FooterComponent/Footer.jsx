@@ -25,9 +25,9 @@ const Footer = () => {
             <div className="container">
                 <div className="wrapper footer_wrapper">
                     <div className="foot_about">
-                        <h2>
+                        <h1 className="link-name">
                             <Link to="/">TKLFashion</Link>
-                        </h2>
+                        </h1>
                         <div className="foot_subs">
 
                             <p>Subscribe to our Email alerts to receive early discount offers, and new products info.</p>

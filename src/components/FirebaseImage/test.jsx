@@ -1,82 +1,47 @@
-import { useState } from 'react';
-import ReactCrop from 'react-image-crop';
-import 'react-image-crop/dist/ReactCrop.css';
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts';
 
-const ImageCropper = () => {
-    const [src, setSrc] = useState(null);
-    const [crop, setCrop] = useState({});
-    const [image, setImage] = useState(null);
-    const [output, setOutput] = useState(null);
+const CancellationRatioPieChart = () => {
+    const [cancellationRatio, setCancellationRatio] = useState(0);
 
-    const selectImage = (file) => {
-        setSrc(URL.createObjectURL(file));
-    };
+    useEffect(() => {
+        fetch(`${process.env.REACT_APP_API_URL}/order/get-cancelled-ratio`)
+            .then(response => response.json())
+            .then(data => setCancellationRatio(data.roundedCancellationRatio))
+            .catch(error => console.error('Error fetching cancellation ratio:', error));
+    }, []);
 
-    const cropImageNow = () => {
-        const canvas = document.createElement('canvas');
-        const scaleX = image.naturalWidth / image.width;
-        const scaleY = image.naturalHeight / image.height;
-        canvas.width = crop.width;
-        canvas.height = crop.height;
-        const ctx = canvas.getContext('2d');
-
-        const pixelRatio = window.devicePixelRatio;
-        canvas.width = crop.width * pixelRatio;
-        canvas.height = crop.height * pixelRatio;
-        ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-        ctx.imageSmoothingQuality = 'high';
-
-        ctx.drawImage(
-            image,
-            crop.x * scaleX,
-            crop.y * scaleY,
-            crop.width * scaleX,
-            crop.height * scaleY,
-            0,
-            0,
-            crop.width,
-            crop.height,
-        );
-
-        // Converting to base64
-        const base64Image = canvas.toDataURL('image/jpeg');
-        setOutput(base64Image);
-    };
-
+    const data = [
+        { name: 'Số đơn bị hủy', value: cancellationRatio },
+        { name: 'Số đơn bình thường', value: 100 - cancellationRatio }
+    ];
+    const COLORS = ['#FF0000', '#0080FF']; // Màu đỏ và màu xanh dương
     return (
-        <div >
-            <center>
-                <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                        selectImage(e.target.files[0]);
-                    }}
-                />
-                <br />
-                <br />
-                <div>
-                    {src && (
-                        <div>
-                            <ReactCrop
-                                src={src}
-                                onImageLoaded={setImage}
-                                crop={crop}
-                                onChange={setCrop}
-                                ruleOfThirds
-                                style={{ width: '200px', height: 'auto' }}
-                            />
-                            <br />
-                            <button onClick={cropImageNow}>Crop</button>
-                            <br />
-                            <br />
-                        </div>
-                    )}
-                </div>
-                <div>{output && <img src={output} style={{ width: '200px', height: 'auto' }} />}</div>
-            </center>
-        </div>
+        <PieChart width={400} height={400}>
+            <Pie
+                dataKey="value"
+                isAnimationActive={false}
+                data={data}
+                cx={200}
+                cy={200}
+                outerRadius={80}
+                fill="#8884d8"
+                label
+            >
+                {
+                    data.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))
+                }
+            </Pie>
+            <Tooltip />
+            <Legend />
+        </PieChart>
     );
-}
+};
 
-export default ImageCropper;
+export default CancellationRatioPieChart;
+
+
+

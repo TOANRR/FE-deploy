@@ -29,7 +29,7 @@ export const WrapperStyleHeaderDilivery = styled.div`
 export const WrapperContainer = styled.div`
   min-height: 120vh;
   width: 100%;
-  background-color: #f5f5fa;
+  background-color: rgb(240, 240, 240);
 
 `
 

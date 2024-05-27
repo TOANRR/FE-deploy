@@ -2,7 +2,7 @@ import React from 'react'
 import { WrapperTypeProduct, Nav, NavLink } from './style'
 const HeadNavComponent = () => {
     return (
-        <div style={{ width: '100', margin: '0 auto', backgroundColor: '#000000', marginBottom: "10px" }}>
+        <div style={{ width: '100', margin: '0 auto', backgroundColor: '#000000' }}>
             <WrapperTypeProduct>
 
                 <NavLink to="/about-us">ABOUT US</NavLink>

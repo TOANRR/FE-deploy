@@ -117,7 +117,9 @@ const SignInPage = () => {
   const handleNavigateSignUp = () => {
     navigate('/sign-up')
   }
-
+  const handleNavigateForgotPassword = () => {
+    navigate('/forgot-password')
+  }
   const handleOnchangeEmail = (value) => {
     setEmail(value)
   }
@@ -190,8 +192,8 @@ const SignInPage = () => {
           <ButtonStyle onClick={handleGoogleLogin} icon={<GoogleOutlined />}>
             Đăng nhập bằng Google
           </ButtonStyle>
-          {/* <p><WrapperTextLight>Quên mật khẩu?</WrapperTextLight></p> */}
-          <p>Chưa có tài khoản? <WrapperTextLight onClick={handleNavigateSignUp}> Tạo tài khoản</WrapperTextLight></p>
+          <p><WrapperTextLight onClick={handleNavigateForgotPassword}>Quên mật khẩu?</WrapperTextLight></p>
+          <p style={{ marginTop: "-10px" }}>Chưa có tài khoản? <WrapperTextLight onClick={handleNavigateSignUp}> Tạo tài khoản</WrapperTextLight></p>
         </WrapperContainerLeft>
 
       </ResponsiveContainer>

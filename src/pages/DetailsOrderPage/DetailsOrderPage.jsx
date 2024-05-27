@@ -34,7 +34,7 @@ const DetailsOrderPage = () => {
 
     return (
         <Loading isLoading={isLoading}>
-            <div style={{ width: '100%', minHeight: '100vh', background: '#f5f5fa', marginBottom: "50px", display: 'flex', justifyContent: 'center' }}>
+            <div style={{ width: '100%', minHeight: '100vh', background: 'rgb(240,240,240)', marginBottom: "50px", display: 'flex', justifyContent: 'center' }}>
 
                 <div style={{ width: '95%', maxWidth: '1270px', margin: '0 auto' }}>
                     <Breadcrumb

@@ -204,12 +204,26 @@ const SearchImagePage = () => {
                                         style={{ width: '200px', height: 'auto' }}
                                     />
                                     <br />
-                                    <button onClick={cropImageNow}>Crop</button>
+                                    <button
+                                        onClick={cropImageNow}
+                                        style={{
+                                            backgroundColor: 'red',
+                                            color: 'white',
+                                            border: 'none',
+                                            padding: '10px 20px',
+                                            marginTop: '10px',
+                                            cursor: 'pointer',
+                                            borderRadius: '5px',
+                                        }}
+                                    >
+                                        Crop
+                                    </button>
                                     <br />
                                     <br />
                                     <div>{output && <img src={output} style={{ width: '200px', height: 'auto' }} />}</div>
+                                    <button className="custom-file-search" onClick={handleUpload} style={{ marginTop: "30px" }}>Tìm kiếm</button>
                                 </div>
-                                <button className="custom-file-search" onClick={handleUpload} style={{ marginTop: "30px" }}>Tìm kiếm</button>
+
 
                             </div>
                         )}

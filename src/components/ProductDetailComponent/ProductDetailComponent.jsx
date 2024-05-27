@@ -264,7 +264,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
                         title: <a href={`/category/${encodeURIComponent(productDetails?.product.category)}?type=${productDetails?.product.type}`}>{productDetails?.product.category}</a>,
                     },
                 ]}
-                style={{ fontSize: "18px", fontWeight: "500" }}
+                style={{ fontSize: "18px", fontWeight: "500", marginTop: "35px" }}
             />
             <Row style={{ boxShadow: '0 2px 4px rgba(0,0,0,0.7)', padding: '16px', background: '#fff', borderRadius: '4px', marginTop: "30px" }}>
                 <Col span={10} style={{ borderRight: '1px solid #e5e5e5', paddingRight: '8px' }}>
