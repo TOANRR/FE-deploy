@@ -60,9 +60,8 @@ export const SearchLabelImage = styled.label`
   cursor: pointer;
   padding-left: 5px;
   padding-right:5px;
-  position: absolute;
-  right: 130px;
   z-index: 3;
+  font-size: 18px;
   i,
   p {
     color: hsl(244, 4%, 36%);
@@ -73,13 +72,7 @@ export const SearchLabelImage = styled.label`
   p {
     font-size: 24px;
   }
-  img {
-    position: absolute;
-    top: 2px;
-    bottom: 2px;
-    width: 100%;
-    height: 100%;
-  }
+
   
 `;
 export const AvatarImage = styled.img`

@@ -446,7 +446,7 @@ const AdminProduct = () => {
     },
     {
       key: 'name',
-      title: 'Tên',
+      title: 'Sản phẩm',
       dataIndex: 'name',
       fixed: 'left',
       width: 250,
@@ -891,14 +891,31 @@ const AdminProduct = () => {
                   name="category"
                   rules={[{ required: true, message: 'Please input your type!' }]}
                 >
-                  <Select
+                  {/* <Select
                     name="category"
                     // defaultValue="lucy"
                     // style={{ width: 120 }}
                     value={stateProduct.category}
                     onChange={handleChangeSelectCate}
                     options={renderOptionsCate(categoryProduct?.data)}
+                  /> */}
+                  <Select
+                    showSearch
+                    name="category"
+                    value={stateProduct.category}
+                    onChange={handleChangeSelectCate}
+                    placeholder="Chọn danh mục"
+                    optionFilterProp="children"
+                    filterOption={(input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
+                    filterSort={(optionA, optionB) =>
+                      (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+                    }
+                    style={{ width: 200 }}
+                    options={renderOptionsCate(categoryProduct?.data)}
+
                   />
+
+
                 </Form.Item>
                 {stateProduct.category === 'add_category' && (
                   <Form.Item
@@ -1079,13 +1096,28 @@ const AdminProduct = () => {
                   rules={[{ required: true, message: 'Please input your type!' }]}
                   labelCol={{ span: 4 }}
                 >
-                  <Select
+                  {/* <Select
                     name="category"
                     // defaultValue="lucy"
                     // style={{ width: 120 }}
                     value={stateProductDetails.category}
                     onChange={handleChangeSelectCateDetail}
                     options={renderOptionsCate(categoryProduct?.data)}
+                  /> */}
+                  <Select
+                    showSearch
+                    name="category"
+                    value={stateProductDetails.category}
+                    onChange={handleChangeSelectCateDetail}
+                    placeholder="Chọn danh mục"
+                    optionFilterProp="children"
+                    filterOption={(input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
+                    filterSort={(optionA, optionB) =>
+                      (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+                    }
+                    style={{ width: 200 }}
+                    options={renderOptionsCate(categoryProduct?.data)}
+
                   />
                 </Form.Item>
                 {stateProductDetails.category === 'add_category' && (

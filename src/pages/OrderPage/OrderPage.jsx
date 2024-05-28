@@ -364,19 +364,17 @@ const OrderPage = () => {
     },
   ]
   return (
-    <div style={{ background: 'rgb(240, 240, 240)', with: '100%', minHeight: '100vh', paddingBottom: "30px" }}>
+    <div style={{ background: '#F9F9FC', minWith: '1100px', minHeight: '100vh', paddingBottom: "30px" }}>
       <Breadcrumb
         items={[
+
           {
-            title: <a href="/">Trang chủ</a>,
-          },
-          {
-            title: <a href="#">Giỏ hàng</a>,
+            title: <a href="#">GIỎ HÀNG</a>,
           }
         ]}
-        style={{ marginBottom: "25px", paddingTop: "30px", fontSize: "18px", paddingLeft: "3%", fontWeight: "500" }}
+        style={{ marginBottom: "25px", paddingTop: "30px", fontSize: "24px", paddingLeft: "4%", fontWeight: "500" }}
       />
-      <div style={{ height: '100%', width: '1270px', margin: '0 auto' }}>
+      <div style={{ height: '100%', minWidth: '1100px', margin: '0 auto' }}>
 
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <WrapperLeft>
@@ -453,7 +451,7 @@ const OrderPage = () => {
               <WrapperInfo>
                 <div>
                   <span>Địa chỉ: </span>
-                  <span style={{ fontWeight: 'bold' }}>{`${user?.address} ${user?.ward} ${user?.district} ${user?.city}`} </span>
+                  <span style={{ fontWeight: 'bold' }}>{`${user?.address}, ${user?.ward}, ${user?.district}, ${user?.city}`} </span>
                   <span onClick={handleChangeAddress} style={{ color: 'blue', cursor: 'pointer' }}>Thay đổi</span>
                 </div>
               </WrapperInfo>

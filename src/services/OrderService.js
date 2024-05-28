@@ -114,3 +114,11 @@ export const getOrdersByStatus = async (status, id, access_token) => {
     })
     return res.data
 }
+export const getNewId = async (id, access_token) => {
+    const res = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/order/get-new-id/${id}`, {
+        headers: {
+            token: `Bearer ${access_token}`,
+        }
+    })
+    return res.data
+}

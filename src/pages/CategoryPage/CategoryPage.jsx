@@ -74,7 +74,7 @@ const CategoryPage = () => {
 
 
     return (
-        <div className="warrap" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+        <div className="warrap" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', paddingBottom: "50px" }}>
 
             <div style={{ width: "80%", textAlign: 'center' }}>
 

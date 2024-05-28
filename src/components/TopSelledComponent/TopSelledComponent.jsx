@@ -12,7 +12,7 @@ const columns = [
         width: 40
     },
     {
-        title: 'Tên',
+        title: 'Sản phẩm',
         dataIndex: 'name',
         key: 'name',
         width: 250
@@ -21,7 +21,11 @@ const columns = [
         title: 'Hình ảnh',
         dataIndex: 'images',
         key: 'images',
-        render: images => <img src={images[0]} alt="Product" style={{ width: '50px', height: 'auto', borderRadius: '50%' }} />,
+        render: images => (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <img src={images[0]} alt="Product" style={{ width: '50px', height: 'auto', borderRadius: '50%' }} />
+            </div>
+        ),
         width: 150
     },
     {

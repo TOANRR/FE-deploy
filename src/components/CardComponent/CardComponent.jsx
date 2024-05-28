@@ -9,7 +9,8 @@ const CardComponent = (props) => {
   const { countInStock, description, images, name, price, rating, type, discount, selled, id } = props
   const navigate = useNavigate()
   const handleDetailsProduct = (id) => {
-    navigate(`/product-details/${id}`)
+    window.location.href = `/product-details/${id}`;
+
   }
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const handleMouseEnter = () => {
@@ -43,6 +44,7 @@ const CardComponent = (props) => {
         overflow: 'hidden',
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap',
+        fontWeight: '600'
 
       }}>{name}</div>
       <WrapperReportText>

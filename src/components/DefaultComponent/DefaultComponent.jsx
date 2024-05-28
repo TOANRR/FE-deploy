@@ -41,12 +41,16 @@ const DefaultComponent = ({ children }) => {
       <ConfigProvider
         theme={{
           token: {
-            // Seed Token
             colorSuccess: "#58ea10",
             colorPrimary: "#000000",
-            colorInfo: "#000000"
-          },
-
+            colorInfo: "#000000",
+            colorPrimaryBg: "#4040401d",
+            colorPrimaryBgHover: "#3333332e",
+            colorPrimaryHover: "#0d0d0d",
+            colorPrimaryBorderHover: "#1a1a1a",
+            colorPrimaryBorder: "#262626",
+            colorPrimaryTextHover: "#0d0d0df7"
+          }
         }}
       >
         {children}

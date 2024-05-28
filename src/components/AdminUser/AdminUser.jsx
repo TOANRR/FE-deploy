@@ -550,9 +550,8 @@ const AdminUser = () => {
       <WrapperHeader>Quản lý người dùng</WrapperHeader>
       <div style={{ marginTop: '20px', width: "100%" }}>
         <div style={{ marginBottom: 16, fontSize: "10px" }}>
-
-          {columns.map((column) => (
-            <span key={column.key} style={{ marginLeft: 8 }}>
+          {columns.map((column, index) => (
+            <span key={index} style={{ marginLeft: 8 }}>
               {column.title}{' '}
               <Switch
                 onChange={(checked) => handleToggleColumn(checked, column.key)}

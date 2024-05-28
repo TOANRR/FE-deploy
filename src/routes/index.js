@@ -26,6 +26,8 @@ import TypePage from "../pages/TypePage/TypePage"
 import CategoryPage from "../pages/CategoryPage/CategoryPage";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage/ForgotPasswordPage";
 import ResetPasswordPage from "../pages/ResetPasswordPage/ResetPasswordPage";
+import ArticlesPage from "../pages/ArticlesPage/ArticlesPage";
+import ArticleDetailsPage from "../pages/ArticleDetailsPage/ArticlesDetailPage";
 export const routes = [
     {
         path: '/',
@@ -164,6 +166,16 @@ export const routes = [
     {
         path: '/category/:id',
         page: CategoryPage,
+        isShowHeader: true
+    },
+    {
+        path: '/articles',
+        page: ArticlesPage,
+        isShowHeader: true
+    },
+    {
+        path: '/articles/:id',
+        page: ArticleDetailsPage,
         isShowHeader: true
     },
     {

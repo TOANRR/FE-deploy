@@ -73,7 +73,7 @@ const TypePage = () => {
 
 
     return (
-        <div className="warrap" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+        <div className="warrap" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', paddingBottom: "50px" }}>
 
 
 

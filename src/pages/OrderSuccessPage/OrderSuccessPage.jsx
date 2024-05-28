@@ -12,7 +12,7 @@ const OrderSucess = () => {
     const location = useLocation()
     const { state } = location
     return (
-        <div style={{ background: 'rgb(240,240,240)', with: '100%', minHeight: '100vh' }}>
+        <div style={{ background: '#F9F9FC', with: '100%', minHeight: '100vh' }}>
             <Breadcrumb
                 items={[
                     {

@@ -97,19 +97,17 @@ const AdminDashboard = () => {
                     </RectangleWrapper>
                 </Col>
             </Row>
-            <Row>
+            <Row justify="center" align="middle">
                 <Col span={20}>
                     <TopSellingProductsTable />
-
                 </Col>
                 <Col span={20} style={{ marginTop: "50px" }}>
                     <RevenueChart />
-
                 </Col>
                 <Col span={20} style={{ marginTop: "50px" }}>
                     <UserCountChart />
                 </Col>
-                <Col span={20} >
+                <Col span={20}>
                     <CancellationRatioPieChart />
                 </Col>
             </Row>

@@ -140,49 +140,40 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
       <WrapperHeader style={{ justifyContent: isHiddenSearch && isHiddenSearch ? 'space-between' : 'unset', width: '100%' }}>
         <Col span={5}>
           {/* // <WrapperTextHeader onClick={() => navigate('/')} style={{ cursor: "pointer", paddingLeft: "25px" }}><img src='/src/assets/images/logo.png'></img></WrapperTextHeader> */}
-          <img src={logo} alt="logo" width="35%" height="35" onClick={() => navigate('/')} style={{ cursor: "pointer", paddingLeft: "25px" }}></img>
+          <img src={logo} alt="logo" width="40%" height="35" onClick={() => navigate('/')} style={{ cursor: "pointer", paddingLeft: "25px" }}></img>
         </Col>
         {!isHiddenSearch && (
           <Col span={12}>
-            <div style={{ display: 'flex', }}>
-              <InputComponent
-                size="large"
-                placeholder="Nhập và tìm kiếm"
-                bordered="bordered"
-                style={{ backgroundColor: "#fff" }}
-                display="inline"
-                position="absolute"
-                z-index="2"
-                onChange={onChangeInput}
-                onKeyPress={handleKeyPress}
-              />
-
-              {/* <UploadImageComponent /> */}
-              <SearchLabelImage >
-
-                <CameraOutlined onClick={handleSearchImage} />
-
-
-              </SearchLabelImage>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <div style={{ width: "80%", position: "relative" }}>
+                <InputComponent
+                  size="large"
+                  placeholder="Nhập và tìm kiếm"
+                  style={{ backgroundColor: "#fff", width: "100%" }}
+                  onChange={onChangeInput}
+                  onKeyPress={handleKeyPress}
+                />
+                <div style={{ position: "absolute", top: "50%", transform: "translateY(-50%)", right: "10px" }}>
+                  <SearchLabelImage>
+                    <CameraOutlined onClick={handleSearchImage} />
+                  </SearchLabelImage>
+                </div>
+              </div>
 
               <ButtonComponent
                 size="large"
-                styleButton={{ background: '#ffff', border: 'none' }}
+                styleButton={{ background: '#fff', border: 'none', marginLeft: "20px" }}
                 icon={<SearchOutlined color="#000000" style={{ color: '#000000' }} />}
                 textbutton="Tìm kiếm"
                 styleTextButton={{ color: "#000000" }}
                 display="inline"
                 onClick={handleSearch}
-
               />
-
-
             </div>
-
           </Col>
         )}
 
-        <Col span={6} style={{ display: 'flex', gap: '2%', alignItems: 'center' }}>
+        <Col span={6} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', paddingRight: "30px" }}>
           <Loading isLoading={loading}>
             <WrapperHeaderAccout>
               {userAvatar ? (
@@ -197,7 +188,7 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
               )}
               {user?.access_token ? (
                 <>
-                  <Popover content={content} trigger="click" open={isOpenPopup}>
+                  <Popover content={content} >
                     <UserNameDiv onClick={() => setIsOpenPopup((prev) => !prev)}>{userName?.length ? userName : user?.email}</UserNameDiv>
                   </Popover>
                 </>

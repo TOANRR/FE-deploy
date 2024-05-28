@@ -15,11 +15,12 @@ import Loading from '../../components/LoadingComponent/LoadingComponent';
 import * as message from '../../components/MessageComponent/MessageComponent'
 import { updateUser } from '../../redux/slides/userSlide';
 import { useNavigate } from 'react-router-dom';
-import { removeAllOrderProduct } from '../../redux/slides/orderSlide';
+import { removeAllOrderProduct, orderPayment } from '../../redux/slides/orderSlide';
 import { PayPalButton } from "react-paypal-button-v2";
 import * as PaymentService from '../../services/PaymentService'
 import { Select } from 'antd';
 import axios from 'axios';
+// import { v4 as uuidv4 } from 'uuid';
 const { Option } = Select;
 
 const PaymentPage = () => {
@@ -161,27 +162,37 @@ const PaymentPage = () => {
     const handlePay = async () => {
         if (user?.access_token && order?.orderItemsSlected && user?.name
             && user?.address && user?.phone && user?.city && priceMemo && user?.id) {
-            // eslint-disable-next-line no-unused-expressions
-            mutationAddOrder.mutate(
-                {
-                    token: user?.access_token,
-                    orderItems: order?.orderItemsSlected,
-                    fullName: user?.name,
-                    address: user?.address,
-                    phone: user?.phone,
-                    city: user?.city,
-                    paymentMethod: payment,
-                    itemsPrice: priceMemo,
-                    shippingPrice: diliveryPriceMemo,
-                    totalPrice: totalPriceMemo,
+            const object = await OrderService.getNewId(user?.id, user?.access_token)
+            if (object.success === true) {
+                dispatch(orderPayment({
+                    orderItems: order?.orderItems,
+                    orderItemsSlected: order?.orderItemsSlected,
+                    shippingAddress:
+                    {
+                        fullName: user?.name,
+                        address: user?.address,
+                        phone: user?.phone,
+                        city: user?.city, district: user?.district,
+                        ward: user?.ward,
+                    },
+                    paymentMethod: payment, // Update this with actual payment method
+                    itemsPrice: priceMemo, // Update this with actual items price
+                    shippingPrice: diliveryPriceMemo, // Update this with actual shipping price
+                    totalPrice: totalPriceMemo, // Update this with actual total price
                     user: user?.id,
-                    district: user?.district,
-                    ward: user?.ward,
-                    delivery: delivery,
-                    email: user?.email
+                    isPaid: false,
+                    delivery: delivery, // Update this with actual delivery method
+                    uuid: object?.objectId
+                }));
+                const res = await PaymentService.getVnpay({ amount: totalPriceMemo, id: object?.objectId });
+                window.location.href = res.data;
 
-                }
-            )
+            }
+            // eslint-disable-next-line no-unused-expressions
+            // const uniqueToken = uuidv4();
+            // console.log(uniqueToken); // In ra một UUID ngẫu nhiên không trùng lặp
+
+
         }
 
 
@@ -257,10 +268,11 @@ const PaymentPage = () => {
                             totalPriceMemo: totalPriceMemo
                         }
                     });
-                } else {
-                    const res = await PaymentService.getVnpay(dataAdd?.data);
-                    window.location.href = res.data;
                 }
+                //  else {
+                //     const res = await PaymentService.getVnpay(dataAdd?.data);
+                //     window.location.href = res.data;
+                // }
             } else if (dataAdd?.status === "ERR") {
                 message.error(dataAdd?.message);
             }
@@ -355,7 +367,7 @@ const PaymentPage = () => {
     }, [])
 
     return (
-        <div style={{ background: 'rgb(240,240,240)', with: '100%', height: '100vh' }}>
+        <div style={{ background: '#F9F9FC', with: '100%', height: '100vh' }}>
             <Breadcrumb
                 items={[
                     {
@@ -386,8 +398,8 @@ const PaymentPage = () => {
                                     <Lable>Chọn phương thức thanh toán</Lable>
                                     <WrapperRadio onChange={handlePayment} value={payment}>
                                         <Radio value="later_money"> Thanh toán tiền mặt khi nhận hàng</Radio>
-                                        <Radio value="paypal"> Thanh toán tiền bằng paypal</Radio>
-                                        <Radio value="vnpay"> Thanh toán tiền bằng vnpay</Radio>
+                                        <Radio value="paypal"> Thanh toán tiền bằng <span style={{ color: '#ea8500', fontWeight: 'bold' }}>Papal</span></Radio>
+                                        <Radio value="vnpay"> Thanh toán tiền bằng <span style={{ color: '#ea8500', fontWeight: 'bold' }}>Vnpay</span></Radio>
                                     </WrapperRadio>
                                 </div>
                             </WrapperInfo>
@@ -397,7 +409,7 @@ const PaymentPage = () => {
                                 <WrapperInfo>
                                     <div>
                                         <span>Địa chỉ: </span>
-                                        <span style={{ fontWeight: 'bold' }}>{`${user?.address} ${user?.ward} ${user?.district} ${user?.city}`} </span>
+                                        <span style={{ fontWeight: 'bold' }}>{`${user?.address}, ${user?.ward}, ${user?.district}, ${user?.city}`} </span>
                                         <span onClick={handleChangeAddress} style={{ color: 'blue', cursor: 'pointer' }}>Thay đổi</span>
                                     </div>
                                 </WrapperInfo>
