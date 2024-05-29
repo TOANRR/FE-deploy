@@ -1,7 +1,6 @@
 import { Button, Form, Select, Space, Switch, Tag, Upload, Row, Col, Modal, Input } from 'antd'
 import React from 'react'
 import { WrapperHeader, WrapperUploadFile } from './style'
-import TableComponent from '../TableComponent/TableComponent'
 import InputComponent from '../InputComponent/InputComponent'
 import DrawerComponent from '../DrawerComponent/DrawerComponent'
 import Loading from '../LoadingComponent/LoadingComponent'
@@ -26,6 +25,7 @@ import ReactQuill from 'react-quill';
 import TableComponentProduct from '../TableComponentProduct/TableComponentProduct'
 import styles from './style.js'; // Đường dẫn đến file styles.js
 import './reactquill.css'
+import TableArticleComponent from '../TableArticleComponent/TableArticleComponent.jsx'
 
 const AdminArticle = () => {
     const [rowSelected, setRowSelected] = useState('')
@@ -549,7 +549,7 @@ const AdminArticle = () => {
                         </span>
                     ))}
                 </div>
-                <TableComponentProduct style={{ width: '1000px' }} columns={columns.filter((column) => !column.hidden)} isLoading={isLoadingArticles} data={dataTable} scroll={{ x: 800 }} onRow={(record, rowIndex) => {
+                <TableArticleComponent style={{ width: '1000px' }} columns={columns.filter((column) => !column.hidden)} isLoading={isLoadingArticles} data={dataTable} scroll={{ x: 800 }} onRow={(record, rowIndex) => {
                     return {
                         onClick: event => {
                             setRowSelected(record._id)
@@ -576,9 +576,6 @@ const AdminArticle = () => {
                         >
                             <InputComponent value={stateArticle.title} onChange={handleOnchange} name="title" />
                         </Form.Item>
-
-
-
 
                         <Form.Item
                             label="Ảnh bìa"
@@ -660,18 +657,6 @@ const AdminArticle = () => {
                             />
 
                         </Form.Item>
-
-
-
-
-
-
-
-
-
-
-
-
                         <Form.Item wrapperCol={{ offset: 20, span: 16 }}>
                             <Button style={{ backgroundColor: "#000000", color: "#fff" }} htmlType="submit">
                                 Submit
@@ -784,17 +769,6 @@ const AdminArticle = () => {
                             />
 
                         </Form.Item>
-
-
-
-
-
-
-
-
-
-
-
 
                         <Form.Item wrapperCol={{ offset: 20, span: 16 }}>
                             <Button style={{ backgroundColor: "#000000", color: "#fff" }} htmlType="submit">

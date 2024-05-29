@@ -199,57 +199,67 @@ const HomePage = () => {
               </div>
             </div>
           </div>;
-
-          <div style={{
-            backgroundColor: '#ffffff',
-            borderRadius: '4px',
-            padding: '20px',
-            boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.5)',
-            marginTop: "40px",
-            marginBottom: "20px"
-          }}>
-            <div id="nam-gioi-section" style={{ width: '100%', height: "70px", margin: '0 auto', backgroundColor: '#ffff' }}>
-              <WrapperTypeFeaturedSec>THỜI TRANG CHO NAM</WrapperTypeFeaturedSec>
-            </div>
+          <div id="nam-gioi-section">
             <Loading isLoading={menLoad}>
-              <CarouselComponent products={productsMen} />
+              <div style={{
+                backgroundColor: '#ffffff',
+                borderRadius: '4px',
+                padding: '20px',
+                boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.5)',
+                marginTop: "40px",
+                marginBottom: "20px"
+              }}>
+                <div style={{ width: '100%', height: "70px", margin: '0 auto', backgroundColor: '#ffff' }}>
+                  <WrapperTypeFeaturedSec>THỜI TRANG CHO NAM</WrapperTypeFeaturedSec>
+                </div>
+
+                <CarouselComponent products={productsMen} />
+
+              </div>
             </Loading>
           </div>
-
-          <div style={{
-            backgroundColor: '#ffffff',
-            borderRadius: '4px',
-            padding: '20px',
-            boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.5)',
-            marginBottom: "20px"
-          }}>
-            <div id="nu-gioi-section" style={{ width: '100%', height: "70px", margin: '0 auto', backgroundColor: '#ffff' }}>
-              <WrapperTypeFeaturedSec>THỜI TRANG CHO NỮ </WrapperTypeFeaturedSec>
-            </div>
+          <div id="nu-gioi-section">
             <Loading isLoading={womenLoad}>
-              <CarouselComponent products={productsWomen} />
+              <div style={{
+                backgroundColor: '#ffffff',
+                borderRadius: '4px',
+                padding: '20px',
+                boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.5)',
+                marginBottom: "20px"
+              }}>
+                <div style={{ width: '100%', height: "70px", margin: '0 auto', backgroundColor: '#ffff' }}>
+                  <WrapperTypeFeaturedSec>THỜI TRANG CHO NỮ </WrapperTypeFeaturedSec>
+                </div>
+
+                <CarouselComponent products={productsWomen} />
+
+              </div>
             </Loading>
           </div>
-
-          <div style={{
-            backgroundColor: '#ffffff',
-            borderRadius: '4px',
-            padding: '20px',
-            boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.5)',
-            marginBottom: "20px"
-          }}>
-            <div id="be-section" style={{ width: '100%', height: "70px", margin: '0 auto', backgroundColor: '#ffff' }}>
-              <WrapperTypeFeaturedSec>THỜI TRANG CHO BÉ</WrapperTypeFeaturedSec>
-            </div>
+          <div id="be-section" >
             <Loading isLoading={kidLoad}>
-              <CarouselComponent products={productsKids} />
+              <div style={{
+                backgroundColor: '#ffffff',
+                borderRadius: '4px',
+                padding: '20px',
+                boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.5)',
+                marginBottom: "20px"
+              }}>
+                <div style={{ width: '100%', height: "70px", margin: '0 auto', backgroundColor: '#ffff' }}>
+                  <WrapperTypeFeaturedSec>THỜI TRANG CHO BÉ</WrapperTypeFeaturedSec>
+                </div>
+
+                <CarouselComponent products={productsKids} />
+
+
+              </div>
             </Loading>
-            <SliderArticlesComponent />
           </div>
 
+          <SliderArticlesComponent />
 
         </div>
-      </Loading>
+      </Loading >
 
     </>
 
