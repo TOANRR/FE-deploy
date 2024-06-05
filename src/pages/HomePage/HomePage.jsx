@@ -39,7 +39,7 @@ const HomePage = () => {
   const [loading, setLoading] = useState(false)
   const [stateProducts, setStateProducts] = useState([])
   const [typeProducts, setTypeProducts] = useState([])
-  const [limit, setLimit] = useState(8)
+  const [limit, setLimit] = useState(12)
 
 
 

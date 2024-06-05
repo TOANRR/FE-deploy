@@ -8,8 +8,8 @@ import LikeButtonComponent from '../../components/LikeButtonComponent/LikeButton
 import { initFacebookSDK } from '../../utils';
 import CommentComponent from '../../components/CommentComponent/CommentComponent';
 import Loading from '../../components/LoadingComponent/LoadingComponent';
-import CommentComponentArticle from '../../components/FirebaseImage/addressTest';
 import { useSelector } from 'react-redux';
+import CommentComponentArticle from '../../components/ArticleCommentComponent/ArticleCommentComponent';
 
 const { Content, Sider } = Layout;
 

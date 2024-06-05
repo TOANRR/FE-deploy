@@ -64,7 +64,7 @@ const AdminArticle = () => {
             const { title, author, content, coverImage } = data
             const res = ArticleServices.createArticle({
                 title, author, content, coverImage
-            })
+            }, user?.access_token)
             return res
         }
     )
@@ -203,13 +203,13 @@ const AdminArticle = () => {
     }
 
     const getAllArticle = async () => {
-        const res = await ArticleServices.getAllArticles()
+        const res = await ArticleServices.getAllArticles(user?.access_token)
         console.log('res', res)
         return res
     }
 
     const fetchGetDetailsArticle = async (rowSelected) => {
-        const res = await ArticleServices.getArticleById(rowSelected)
+        const res = await ArticleServices.getArticleById(rowSelected, user?.access_token)
         console.log(res)
         if (res) {
             setStateArticleDetails({
@@ -393,7 +393,12 @@ const AdminArticle = () => {
             key: 'title',
             title: 'Tiêu đề',
             dataIndex: 'title',
-            sorter: (a, b) => a.title.length - b.title.length,
+            sorter: (a, b) => a.title.localeCompare(b.title),
+            render: (text, record) => (
+                <a href={`${process.env.REACT_APP_URL}/articles/${record._id}`} target="_blank" rel="noopener noreferrer">
+                    {text}
+                </a>
+            ),
             ...getColumnSearchProps('title'),
             fixed: 'left',
             width: 180
@@ -502,7 +507,7 @@ const AdminArticle = () => {
     }
 
     const handleDeleteArticle = () => {
-        mutationDeleted.mutate({ id: rowSelected }, {
+        mutationDeleted.mutate({ id: rowSelected, token: user?.access_token }, {
             onSettled: () => {
                 queryArtilces.refetch()
             }
@@ -780,7 +785,7 @@ const AdminArticle = () => {
             </DrawerComponent>
             <ModalComponent title="Xóa bài viết" open={isModalOpenDelete} onCancel={handleCancelDelete} onOk={handleDeleteArticle} forceRender={true}>
                 <Loading isLoading={isLoadingDeleted}>
-                    <div>Bạn có chắc xóa tài khoản này không?</div>
+                    <div>Bạn có chắc xóa bài viết này không?</div>
                 </Loading>
             </ModalComponent>
         </div >

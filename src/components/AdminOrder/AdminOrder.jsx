@@ -349,7 +349,7 @@ const AdminOrder = () => {
             key: 'user',
             width: 150,
             fixed: "left",
-            sorter: (a, b) => a.fullname.length - b.fullname.length,
+            sorter: (a, b) => a.fullname.localeCompare(b.fullname),
             ...getColumnSearchProps('fullname'),
 
         },
@@ -358,7 +358,7 @@ const AdminOrder = () => {
             dataIndex: 'address',
             key: 'address',
             width: 300,
-            sorter: (a, b) => a.address.length - b.address.length,
+            sorter: (a, b) => a.address.localeCompare(b.address),
             ...getColumnSearchProps('address'),
 
         },
@@ -681,6 +681,12 @@ const AdminOrder = () => {
     };
 
     const confirmCancelOrder = () => {
+        if (!cancelReason) {
+            // Hiển thị một cảnh báo hoặc thông báo lỗi cho người dùng
+            // Ví dụ:
+            message.error('Vui lòng nhập lý do hủy đơn hàng');
+            return; // Ngăn người dùng tiếp tục thực hiện hành động
+        }
         mutationCancel.mutate({ id: stateOrderDetails._id, access_token: user?.access_token, reason: cancelReason }, {
             onSettled: () => {
                 queryOrder.refetch();
@@ -966,7 +972,8 @@ const AdminOrder = () => {
             >
                 <Loading isLoading={isLoadingCancel}>
                     <div>
-                        Bạn có chắc chắn muốn hủy đơn hàng này không? Vui lòng cung cấp lý do:
+                        Bạn có chắc chắn muốn hủy đơn hàng này không? <br />
+                        Vui lòng cung cấp lý do:
                         <Input.TextArea
                             rows={4}
                             value={cancelReason}

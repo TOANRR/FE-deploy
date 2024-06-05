@@ -69,6 +69,7 @@ const SearchImagePage = () => {
 
                     const res = await ProductService.getSearchImage({ query_img: urlUpload });
                     console.log(res);
+                    setCurrentPage(1)
                     setSearchResult(res.products)
                     setLoading(false);
 
