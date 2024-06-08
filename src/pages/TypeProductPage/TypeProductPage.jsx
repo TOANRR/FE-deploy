@@ -8,6 +8,9 @@ import { LeftSide, RightContent, Wrapper, WrapperNavbar, WrapperProducts } from 
 import { Col, Pagination, Row } from 'antd'
 import { limit } from 'firebase/firestore';
 import CardComponent from '../../components/CardComponent/CardComponent';
+import slider1 from '../../assets/images/sliderSP1.jpg'
+import slider2 from '../../assets/images/sliderSP2.jpg'
+import SliderComponent from '../../components/SliderComponent/SliderComponent';
 const { Option } = Select;
 const { TreeNode } = Tree;
 
@@ -114,88 +117,92 @@ const SearchPage = () => {
 
 
     return (
+        <div>
+            <SliderComponent arrImages={[slider1, slider2]} />
+            <Wrapper>
 
-        <Wrapper>
-            <LeftSide>
-                <h1>Phân loại</h1>
-                <Menu mode="vertical-right" >
-                    <Menu.Item>
-                        <span>Giá (VNĐ): </span>
-                    </Menu.Item>
-                    <Menu.Item>
+                <LeftSide>
+                    <h1>Phân loại</h1>
+                    <Menu mode="vertical-right" >
+                        <Menu.Item>
+                            <span>Giá (VNĐ): </span>
+                        </Menu.Item>
+                        <Menu.Item>
 
-                        <Slider
-                            range
-                            min={0}
-                            max={4000000}
-                            defaultValue={[0, 100]}
-                            value={price}
-                            onChange={(value) => setPrice(value)}
-                        />
-                    </Menu.Item>
+                            <Slider
+                                range
+                                min={0}
+                                max={4000000}
+                                defaultValue={[0, 100]}
+                                value={price}
+                                onChange={(value) => setPrice(value)}
+                            />
+                        </Menu.Item>
 
-                    <Menu.Item>
-                        <Tree
-                            checkable
-                            defaultExpandedKeys={typeCategories?.map(item => item.type)}
-                            onCheck={handleCategoryChange}
-                        >
-                            {typeCategories?.map((typeCategory) => (
-                                <TreeNode title={<span style={treeNodeStyle}>{typeCategory.type.toUpperCase()}</span>} key={typeCategory.type}>
-                                    {typeCategory.categories.map((category) => (
-                                        <TreeNode
-                                            title={<span>{category.toUpperCase()}</span>}
-                                            key={`${typeCategory.type}_${category}`}
-                                        />
-                                    ))}
-                                </TreeNode>
-                            ))}
-                        </Tree>
-                    </Menu.Item>
-                    <Menu.Item>
-                        <Button style={{ background: '#000000', color: "#fff", width: "100%" }} onClick={handleSearch} >Search</Button>
-                    </Menu.Item>
-                </Menu>
-            </LeftSide>
+                        <Menu.Item>
+                            <Tree
+                                checkable
+                                defaultExpandedKeys={typeCategories?.map(item => item.type)}
+                                onCheck={handleCategoryChange}
+                            >
+                                {typeCategories?.map((typeCategory) => (
+                                    <TreeNode title={<span style={treeNodeStyle}>{typeCategory.type.toUpperCase()}</span>} key={typeCategory.type}>
+                                        {typeCategory.categories.map((category) => (
+                                            <TreeNode
+                                                title={<span>{category.toUpperCase()}</span>}
+                                                key={`${typeCategory.type}_${category}`}
+                                            />
+                                        ))}
+                                    </TreeNode>
+                                ))}
+                            </Tree>
+                        </Menu.Item>
+                        <Menu.Item>
+                            <Button style={{ background: '#000000', color: "#fff", width: "100%" }} onClick={handleSearch} >Search</Button>
+                        </Menu.Item>
+                    </Menu>
+                </LeftSide>
 
-            <RightContent>
+                <RightContent>
 
-                <h2>Kết quả tìm kiếm</h2>
-                <Select defaultValue="price_low_to_high" style={{ width: 200, marginLeft: 'auto', marginRight: 0, marginTop: "20px" }} onChange={handleSortChange}>
-                    <Option value="price_low_to_high">Giá: Thấp đến cao</Option>
-                    <Option value="price_high_to_low">Giá: Cao đến thấp</Option>
-                    <Option value="name_A_to_Z">Tên: A to Z</Option>
-                    <Option value="name_Z_to_A">Tên: Z to A</Option>
-                </Select>
-                <Loading isLoading={loading} >
-
-
-                    <WrapperProducts >
-                        {searchResult?.map((product) => {
-                            return (
-                                <CardComponent
-                                    key={product._id}
-                                    countInStock={sumArray(product.sizes)}
-                                    description={product.description}
-                                    images={product.images}
-                                    name={product.name}
-                                    rating={product.rating}
-                                    price={product.price}
-                                    type={product.type}
-                                    selled={product.selled}
-                                    discount={product.discount}
-                                    id={product._id}
-                                />
-                            )
-                        })}
-                    </WrapperProducts>
-                    <Pagination current={panigate.page} total={panigate.total} defaultPageSize={1} onChange={onChange} style={{ textAlign: 'center', marginTop: '10px' }} />
+                    <h2>Kết quả tìm kiếm</h2>
+                    <Select defaultValue="price_low_to_high" style={{ width: 200, marginLeft: 'auto', marginRight: 0, marginTop: "20px" }} onChange={handleSortChange}>
+                        <Option value="price_low_to_high">Giá: Thấp đến cao</Option>
+                        <Option value="price_high_to_low">Giá: Cao đến thấp</Option>
+                        <Option value="name_A_to_Z">Tên: A to Z</Option>
+                        <Option value="name_Z_to_A">Tên: Z to A</Option>
+                    </Select>
+                    <Loading isLoading={loading} >
 
 
-                </Loading>
+                        <WrapperProducts >
+                            {searchResult?.map((product) => {
+                                return (
+                                    <CardComponent
+                                        key={product._id}
+                                        countInStock={sumArray(product.sizes)}
+                                        description={product.description}
+                                        images={product.images}
+                                        name={product.name}
+                                        rating={product.rating}
+                                        price={product.price}
+                                        type={product.type}
+                                        selled={product.selled}
+                                        discount={product.discount}
+                                        id={product._id}
+                                    />
+                                )
+                            })}
+                        </WrapperProducts>
+                        <Pagination current={panigate.page} total={panigate.total} defaultPageSize={1} onChange={onChange} style={{ textAlign: 'center', marginTop: '10px' }} />
 
-            </RightContent>
-        </Wrapper>
+
+                    </Loading>
+
+                </RightContent>
+            </Wrapper>
+        </div>
+
 
     );
 };

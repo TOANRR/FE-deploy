@@ -342,6 +342,15 @@ const AdminOrder = () => {
             fixed: 'left',
             width: 60,
         },
+        {
+            title: 'Mã đơn hàng',
+            dataIndex: '_id',
+            key: 'id',
+            width: 150,
+            fixed: "left",
+            ...getColumnSearchProps('_id'),
+
+        },
 
         {
             title: 'Người dùng',
@@ -811,6 +820,9 @@ const AdminOrder = () => {
 
                         <Row gutter={24}>
                             <Col span={12}>
+                                <Form.Item label="Mã đơn hàng" labelCol={{ span: 5 }}>
+                                    <Input value={stateOrderDetails._id} disabled />
+                                </Form.Item>
                                 <Form.Item label="Khách hàng" labelCol={{ span: 4 }}>
                                     <Input value={stateOrderDetails.shippingAddress.fullName} disabled />
                                 </Form.Item>

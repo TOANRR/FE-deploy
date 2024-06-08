@@ -1,5 +1,5 @@
 import React from 'react'
-import { WrapperAllPrice, WrapperContentInfo, WrapperHeaderUser, WrapperInfoUser, WrapperItem, WrapperItemLabel, WrapperLabel, WrapperNameProduct, WrapperProduct, WrapperStyleContent, WrapperWatermark } from './style'
+import { WrapperAllPrice, WrapperContentInfo, WrapperHeaderUser, WrapperInfoUser, WrapperItem, WrapperItemLabel, WrapperLabel, WrapperLabelCode, WrapperNameProduct, WrapperProduct, WrapperStyleContent, WrapperWatermark } from './style'
 import logo from '../../assets/images/logo.png'
 import { useLocation, useParams } from 'react-router-dom'
 import { useEffect } from 'react'
@@ -53,7 +53,7 @@ const DetailsOrderPage = () => {
                     />
                     {/* <h3 style={{ fontStyle: "italic" }}>Chi tiết đơn hàng</h3> */}
                     <Watermark content={`${data?.isCancel ? 'Đã Hủy' : ''}`}>
-
+                        <WrapperLabelCode>Mã đơn hàng: {data?._id}</WrapperLabelCode>
 
                         <WrapperHeaderUser>
                             <WrapperInfoUser>

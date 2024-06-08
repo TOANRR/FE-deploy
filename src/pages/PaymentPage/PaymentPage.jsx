@@ -254,8 +254,11 @@ const PaymentPage = () => {
         async function handleOrder() {
             if (isSuccess && dataAdd?.status === 'OK') {
                 const arrayOrdered = [];
-                order?.orderItemsSlected?.forEach(element => {
-                    arrayOrdered.push(element.product);
+                dataAdd?.data.orderItems?.forEach(element => {
+                    arrayOrdered.push({
+                        product: element.product,
+                        size: element.size
+                    });
                 });
                 dispatch(removeAllOrderProduct({ listChecked: arrayOrdered }));
                 if (dataAdd?.data?.paymentMethod !== "vnpay") {

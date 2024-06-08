@@ -83,3 +83,57 @@ export const WrapperStyleHeaderDilivery = styled.div`
   };
   margin-bottom: 4px;
 `
+export const Wrapper = styled.div`
+  width: 390px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  @media (max-width: 1100px) {
+    width: 240px;
+    // flex-direction: column;
+    // align-items: flex-start;
+  }
+`;
+
+export const ResponsiveImage = styled.img`
+  width: 77px;
+  height: auto;
+  object-fit: cover;
+
+  @media (max-width: 1100px) {
+    width: 40px ;
+    height: auto;
+  }
+`;
+
+export const ResponsiveLink = styled.a`
+  width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+
+  @media (max-width: 1100px) {
+    width: 100px;
+  }
+`;
+export const Container = styled.span`
+  display: inline-block;
+  width: 390px;
+
+  @media (max-width: 1100px) {
+    width: 240px;
+  }
+`;
+
+export const ResponsiveText = styled.span`
+  display: inline-block;
+  margin-left: 8px;
+
+  @media (max-width: 1100px) {
+    margin-left: 4px;
+  }
+`;

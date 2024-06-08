@@ -102,11 +102,15 @@ function App() {
                     <div style={{ display: route.isShowHeader ? 'block' : 'none' }}>
                       {(user ? (
                         // Nếu user tồn tại, hiển thị df-messenger với user-id
-                        <df-messenger intent="WELCOME" chat-title="TKLFashion" agent-id="e7f8ffc8-4612-4cab-914d-8d81f3b0ba0a"
+                        <df-messenger df-messenger
+                          chat-icon="https:&#x2F;&#x2F;firebasestorage.googleapis.com&#x2F;v0&#x2F;b&#x2F;economerce-89f59.appspot.com&#x2F;o&#x2F;logo%2F64a6c1a8330845b397e9c390e46fb2f7.png?alt=media&amptoken=a80b844f-6102-4990-85f4-710d4e524d47"
+                          intent="WELCOME" chat-title="TKLFashion" agent-id="e7f8ffc8-4612-4cab-914d-8d81f3b0ba0a"
                           language-code="vi" user-id={user.id.toString()}></df-messenger>
                       ) : (
                         // Nếu user không tồn tại, hiển thị df-messenger bình thường
-                        <df-messenger intent="WELCOME" chat-title="TKLFashion" agent-id="e7f8ffc8-4612-4cab-914d-8d81f3b0ba0a"
+                        <df-messenger df-messenger
+                          chat-icon="https:&#x2F;&#x2F;firebasestorage.googleapis.com&#x2F;v0&#x2F;b&#x2F;economerce-89f59.appspot.com&#x2F;o&#x2F;logo%2F64a6c1a8330845b397e9c390e46fb2f7.png?alt=media&amptoken=a80b844f-6102-4990-85f4-710d4e524d47"
+                          intent="WELCOME" chat-title="TKLFashion" agent-id="e7f8ffc8-4612-4cab-914d-8d81f3b0ba0a"
                           language-code="vi"></df-messenger>
                       ))}
                     </div>

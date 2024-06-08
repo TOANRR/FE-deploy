@@ -271,18 +271,18 @@ const ProductDetailsComponent = ({ idProduct }) => {
                 <Col span={10} style={{ borderRight: '1px solid #e5e5e5', paddingRight: '8px' }}>
                     <WrapperStyleImage src={selectImage} alt="image product" />
                     <Row style={{ paddingTop: '10px', justifyContent: 'space-between' }}>
-                        <WrapperStyleColImage span={4} sty="true">
+                        <WrapperStyleColImage span={5} sty="true">
                             <WrapperStyleImageSmall src={productDetails?.product.images[0]} onClick={() => handleSelect(0)} alt="image small" />
                         </WrapperStyleColImage>
-                        <WrapperStyleColImage span={4}>
+                        <WrapperStyleColImage span={5}>
                             <WrapperStyleImageSmall src={productDetails?.product.images[1]} onClick={() => handleSelect(1)} alt="image small" />
                         </WrapperStyleColImage>
 
-                        <WrapperStyleColImage span={4}>
+                        <WrapperStyleColImage span={5}>
                             <WrapperStyleImageSmall src={productDetails?.product.images[2]} onClick={() => handleSelect(2)} alt="image small" />
                         </WrapperStyleColImage>
 
-                        <WrapperStyleColImage span={4}>
+                        <WrapperStyleColImage span={5}>
                             <WrapperStyleImageSmall src={productDetails?.product.images[3]} onClick={() => handleSelect(3)} alt="image small" />
                         </WrapperStyleColImage>
 
