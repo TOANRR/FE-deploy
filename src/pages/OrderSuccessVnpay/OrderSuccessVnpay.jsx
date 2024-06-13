@@ -103,11 +103,11 @@ const OrderSuccessVnpay = () => {
                         )
 
                     }
-                    {
+                    {/* {
                         (success === '') && (
                             <div class="loading-spinner"></div>
                         )
-                    }
+                    } */}
                 </div>
 
             </Loading>

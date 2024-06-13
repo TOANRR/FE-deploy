@@ -111,13 +111,15 @@ export const ResponsiveLink = styled.a`
   width: 260px;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal; /* Chuyển từ nowrap thành normal */
+  word-wrap: break-word; /* Thêm dòng này để từ dài không bị cắt ngang */
   text-decoration: none;
   color: inherit;
   display: block;
 
   @media (max-width: 1100px) {
-    width: 100px;
+    width: 120px;
+    font-size: 12px;
   }
 `;
 export const Container = styled.span`
@@ -136,4 +138,18 @@ export const ResponsiveText = styled.span`
   @media (max-width: 1100px) {
     margin-left: 4px;
   }
+`;
+export const ProductLink = styled.a`
+  width: 260px; 
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal; /* Chuyển từ nowrap thành normal */
+  word-wrap: break-word; /* Thêm dòng này để từ dài không bị cắt ngang */
+  margin-left: 10px;
+  height: 70px;
+  display: -webkit-box; /* Thêm các dòng này để hỗ trợ hiển thị đa dòng */
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3; /* Số lượng dòng tối đa mà bạn muốn hiển thị */
+  text-decoration: none;
+  color: inherit;
 `;

@@ -19,6 +19,8 @@ import { updateUser } from '../../redux/slides/userSlide';
 import { useNavigate } from 'react-router-dom';
 import StepComponent from '../../components/StepComponent/StepComponent';
 import * as CardService from '../../services/CardService'
+import * as  ProductService from '../../services/ProductService'
+
 import { Select } from 'antd';
 import axios from 'axios';
 const { Option } = Select;
@@ -296,14 +298,21 @@ const OrderPage = () => {
     }
   }
 
-  const handleAddCard = () => {
+  const handleAddCard = async () => {
     if (!order?.orderItemsSlected?.length) {
       message.error('Vui lòng chọn sản phẩm')
     } else if (!user?.phone || !user?.address || !user?.name || !user?.city || !user?.ward || !user?.district) {
       setIsOpenModalUpdateInfo(true)
     }
     else {
-      navigate('/payment')
+      const res = await ProductService.checkStock(order?.orderItemsSlected)
+      console.log(res)
+      if (res.success === true)
+
+        navigate('/payment')
+      else {
+        message.error(res.message)
+      }
     }
   }
 
