@@ -4,7 +4,7 @@ import axios from 'axios';
 import * as ProductService from '../../services/ProductService';
 import { useQuery } from '@tanstack/react-query'
 import Loading from '../../components/LoadingComponent/LoadingComponent'
-import { LeftSide, RightContent, Wrapper, WrapperNavbar, WrapperProducts } from './style'
+import { LeftSide, RightContent, StyledHeader, Wrapper, WrapperNavbar, WrapperProducts } from './style'
 import { Col, Pagination, Row } from 'antd'
 import { limit } from 'firebase/firestore';
 import CardComponent from '../../components/CardComponent/CardComponent';
@@ -58,25 +58,22 @@ const SearchPage = () => {
         setLoading(false);
     }, [panigate.page, sortBy])
     useEffect(() => {
-        // const fetchData = async () => {
-        //     try {
-        //         const res = await ProductService.getFilterProduct();
-        //         // Xử lý dữ liệu trả về ở đây
-        //     } catch (error) {
-        //         console.error('Error fetching filter product:', error);
-        //     }
-        // };
+
 
         if (search === true) {
-
+            setSortBy('')
             if (panigate.page === 1) {
                 setLoading(true);
                 fetchProductFilter()
                 setLoading(false);
             }
 
-            else
+            else {
+
                 setPanigate({ ...panigate, page: 1 })
+
+
+            }
 
 
             SetSearch(false)
@@ -119,6 +116,9 @@ const SearchPage = () => {
     return (
         <div>
             <SliderComponent arrImages={[slider1, slider2]} />
+            <StyledHeader>
+                <h1>SẢN PHẨM CỦA CHÚNG TÔI</h1>
+            </StyledHeader>
             <Wrapper>
 
                 <LeftSide>
@@ -166,12 +166,16 @@ const SearchPage = () => {
                 <RightContent>
 
                     <h2>Kết quả tìm kiếm</h2>
-                    <Select defaultValue="price_low_to_high" style={{ width: 200, marginLeft: 'auto', marginRight: 0, marginTop: "20px" }} onChange={handleSortChange}>
-                        <Option value="price_low_to_high">Giá: Thấp đến cao</Option>
-                        <Option value="price_high_to_low">Giá: Cao đến thấp</Option>
-                        <Option value="name_A_to_Z">Tên: A to Z</Option>
-                        <Option value="name_Z_to_A">Tên: Z to A</Option>
-                    </Select>
+                    <div>
+                        <Select value={sortBy} style={{ width: 200, marginLeft: 'auto', marginRight: 0, marginTop: "20px" }} onChange={handleSortChange}>
+                            <Option value="price_low_to_high">Giá: Thấp đến cao</Option>
+                            <Option value="price_high_to_low">Giá: Cao đến thấp</Option>
+                            <Option value="name_A_to_Z">Tên: A to Z</Option>
+                            <Option value="name_Z_to_A">Tên: Z to A</Option>
+                            <Option value="">Sắp xếp</Option>
+                        </Select>
+                    </div>
+
                     <Loading isLoading={loading} >
 
 

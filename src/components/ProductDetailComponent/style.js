@@ -2,13 +2,27 @@ import { Col, Image, InputNumber } from "antd";
 import styled from "styled-components";
 
 export const WrapperStyleImageSmall = styled.img`
-    height: auto;
+     height: auto;
     width: 100%;
-  
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer; /* Thay đổi con trỏ thành pointer khi di chuột vào ảnh */
+
+  &:hover {
+    transform: scale(1.1); /* Phóng to ảnh khi di chuột */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Tăng bóng đổ khi di chuột */
+  }
 `;
 export const WrapperStyleImage = styled.img`
-    height: auto; 
+     height: auto;
     width: 100%;
+    border: 2px solid #ddd; /* Viền */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Bóng đổ */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Hiệu ứng khi di chuột */
+
+    &:hover {
+        transform: scale(1.05); /* Phóng to ảnh khi di chuột */
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Tăng bóng đổ khi di chuột */
+    }
 `;
 
 export const WrapperStyleColImage = styled(Col)`
